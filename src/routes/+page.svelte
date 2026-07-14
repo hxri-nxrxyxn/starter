@@ -114,12 +114,14 @@
 		{#if section === 'home'}
 			<div class="flex flex-col gap-4">
 				<h2 class="text-lg font-semibold tracking-tight">Hero</h2>
-				<HeroSection
-					headline="28 Composites Ready"
-					subheadline="Svelte 5 · shadcn-svelte · GSAP — copy-paste into any app"
-					ctaLabel="Explore"
-					onCta={() => toast('App Starter ready!')}
-				/>
+				<div class="-mx-4 -mt-4">
+					<HeroSection
+						headline="28 Composites Ready"
+						subheadline="Svelte 5 · shadcn-svelte · GSAP — copy-paste into any app"
+						ctaLabel="Explore"
+						onCta={() => toast('App Starter ready!')}
+					/>
+				</div>
 				<BigTimer value={28} label="section composites" sub="40 pattern components · 0 errors" />
 				<FeatureGrid />
 
