@@ -60,7 +60,7 @@
 				{/if}
 			</div>
 			{#if username}
-				<p class="text-muted-foreground text-sm">@{username}</p>
+				<p class="text-muted-foreground text-sm">{username}</p>
 			{/if}
 			{#if bio}
 				<p class="mt-1 text-sm">{bio}</p>

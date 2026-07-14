@@ -232,7 +232,7 @@
 					<PremiumBanner title="Go Premium" description="Unlock unlimited access" actionLabel="Upgrade" icon={Sparkles} />
 
 					<SectionHeader title="Achievements" />
-					<div class="grid grid-cols-2 gap-3">
+					<div class="grid grid-cols-2 gap-4">
 						<AchievementCard icon={Trophy} title="Early Bird" description="First login" unlocked rarity="legendary" />
 						<AchievementCard icon={Flame} title="On Fire" description="7-day streak" unlocked={false} progress={5} progressMax={7} rarity="rare" />
 						<AchievementCard icon={Star} title="Consistent" description="30-day streak" unlocked={false} progress={17} progressMax={30} rarity="epic" />

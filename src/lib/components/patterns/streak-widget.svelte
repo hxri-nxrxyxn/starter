@@ -53,7 +53,7 @@
 		<FlameIcon
 			class={cn(
 				"size-10",
-				count > 0 ? "text-amber-500" : "text-muted-foreground"
+				count > 0 ? "text-primary" : "text-muted-foreground"
 			)}
 		/>
 		</div>
@@ -64,11 +64,11 @@
 		{#if clampedGoal > 0}
 			<div class="mt-1 flex w-full max-w-40 items-center gap-2">
 				<div class="bg-muted h-2 flex-1 overflow-hidden rounded-full">
-					<div
-						bind:this={barEl}
-						class="bg-amber-500 h-full rounded-full"
-						style="width: {progressPercent}%"
-					></div>
+				<div
+					bind:this={barEl}
+					class="bg-primary h-full rounded-full"
+					style="width: {progressPercent}%"
+				></div>
 				</div>
 				<span class="text-xs text-muted-foreground tabular-nums">
 					{count}/{clampedGoal}

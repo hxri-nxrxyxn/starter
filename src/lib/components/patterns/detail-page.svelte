@@ -95,11 +95,11 @@
 	{/if}
 
 	{#if metadata && metadata.length > 0}
-		<dl bind:this={metadataEl} class="grid grid-cols-2 gap-x-6 gap-y-3">
+		<dl bind:this={metadataEl} class="grid grid-cols-2 gap-x-6 gap-y-4">
 			{#each metadata as item (item.label)}
-				<div>
-					<dt class="text-muted-foreground text-sm">{item.label}</dt>
-					<dd class="text-sm font-medium">{item.value}</dd>
+				<div class="rounded-lg bg-muted/50 px-3 py-2.5">
+					<dt class="text-muted-foreground text-xs">{item.label}</dt>
+					<dd class="mt-0.5 text-lg font-semibold tracking-tight">{item.value}</dd>
 				</div>
 			{/each}
 		</dl>

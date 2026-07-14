@@ -32,7 +32,7 @@
 <Card.Card
 	data-slot="premium-banner"
 	class={cn(
-		'border-0 bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg ring-0',
+		'border-0 bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg ring-0',
 		variant === 'compact' && 'p-2',
 		className
 	)}
@@ -45,12 +45,12 @@
 	>
 		<div
 			class={cn(
-				'flex shrink-0 items-center justify-center rounded-lg bg-white/20',
+				'flex shrink-0 items-center justify-center rounded-lg bg-primary-foreground/20',
 				variant === 'compact' ? 'size-8' : 'size-10'
 			)}
 		>
 			<IconComponent
-				class={cn('text-white', variant === 'compact' ? 'size-4' : 'size-5')}
+				class={cn('text-primary-foreground', variant === 'compact' ? 'size-4' : 'size-5')}
 			/>
 		</div>
 
@@ -65,13 +65,13 @@
 					{title}
 				</h3>
 				{#if description && variant !== 'compact'}
-					<p class="mt-0.5 text-sm text-white/80">{description}</p>
+					<p class="mt-0.5 text-sm text-primary-foreground/80">{description}</p>
 				{/if}
 			</div>
 
 			{#if actionLabel && onAction}
 				<Button
-					variant="default"
+					variant="secondary"
 					size={variant === 'compact' ? 'xs' : 'sm'}
 					onclick={onAction}
 					class={cn(

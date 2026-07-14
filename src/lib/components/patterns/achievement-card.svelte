@@ -41,17 +41,16 @@
 	const rarityLabel = $derived(rarity.charAt(0).toUpperCase() + rarity.slice(1));
 
 	let cardEl: HTMLDivElement | null = $state(null);
-	let iconWrapper: HTMLDivElement | undefined = $state();
 	let iconEl: HTMLDivElement | undefined = $state();
+	let progressEl: HTMLDivElement | undefined = $state();
 
 	onMount(() => {
 		if (!cardEl) return;
 		const ctx = gsap.context(() => {
 			const tl = gsap.timeline({ ease: 'premium-smooth' });
 			tl.from(cardEl!, { opacity: 0, y: 15, duration: 0.4 }, 0);
-			if (iconWrapper && unlocked) {
-				tl.fromTo(iconWrapper!, { scale: 0, rotation: -15 }, { scale: 1, rotation: 0, duration: 0.35, ease: 'back.out(2)' }, 0.05);
-			}
+			if (iconEl) tl.from(iconEl!, { scale: 0, opacity: 0, duration: 0.3, ease: 'back.out(2)' }, 0.05);
+			if (progressEl) tl.from(progressEl!, { opacity: 0, y: 8, duration: 0.25 }, 0.2);
 		}, cardEl);
 		return () => ctx.revert();
 	});
@@ -61,47 +60,40 @@
 	bind:ref={cardEl}
 	data-slot="achievement-card"
 	class={cn(
-		!unlocked && '[&_svg]:text-muted-foreground [&_.card-title]:text-muted-foreground',
+		!unlocked && 'opacity-60',
 		className
 	)}
 >
-	<Card.CardContent class="flex flex-col gap-2">
-		<div class="flex items-start gap-2">
-			{#if Icon}
-				<div
-					bind:this={iconEl}
-					class={cn(
-						'flex size-8 shrink-0 items-center justify-center rounded-lg',
-						unlocked ? 'bg-muted' : 'bg-muted/50'
-					)}
-				>
-					<Icon class="size-4" />
-				</div>
-			{/if}
+	<Card.Content class="flex flex-col gap-2">
+		<div class="flex items-start justify-between gap-3">
 			<div class="min-w-0 flex-1">
-				<h3
-					data-slot="card-title"
-					class={cn('truncate text-sm font-medium', !unlocked && 'text-muted-foreground')}
-				>
-					{title}
-				</h3>
-				{#if description}
-					<p class={cn('mt-0.5 truncate text-xs', !unlocked ? 'text-muted-foreground' : '')}>
-						{description}
-					</p>
-				{/if}
-				<div class="mt-1">
-					<Badge variant={rarityVariant[rarity]} class="text-[10px]">{rarityLabel}</Badge>
+				<div class="flex items-center gap-2">
+					{#if Icon}
+						<div
+							bind:this={iconEl}
+							class={cn(
+								'flex size-8 shrink-0 items-center justify-center rounded-lg',
+								unlocked ? 'bg-muted' : 'bg-muted/50'
+							)}
+						>
+							<Icon class="size-4" />
+						</div>
+					{/if}
+					<Badge variant={rarityVariant[rarity]} class="text-[10px] leading-none">{rarityLabel}</Badge>
 				</div>
+				<p class="mt-1.5 truncate text-lg font-semibold tracking-tight">{title}</p>
+				{#if description}
+					<span class="text-muted-foreground mt-0.5 block truncate text-xs">{description}</span>
+				{/if}
 			</div>
 		</div>
 		{#if progress != null && progressMax != null}
-			<div class="flex items-center gap-2">
+			<div bind:this={progressEl} class="flex items-center gap-2">
 				<Progress value={progress} max={progressMax} class="flex-1" />
-				<span class="text-muted-foreground shrink-0 text-[10px]">
+				<span class="text-muted-foreground shrink-0 text-xs tabular-nums">
 					{progress}/{progressMax}
 				</span>
 			</div>
 		{/if}
-	</Card.CardContent>
+	</Card.Content>
 </Card.Card>

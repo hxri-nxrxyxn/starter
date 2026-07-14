@@ -15,7 +15,7 @@ export interface AppUser {
 }
 
 class AppStore {
-	theme = $state<Theme>('system');
+	theme = $state<Theme>('light');
 	colorScheme = $state<ColorScheme>('neutral');
 	user = $state<AppUser | null>(null);
 	isAuthenticated = $state(false);
