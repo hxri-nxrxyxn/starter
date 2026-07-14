@@ -2,7 +2,7 @@
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import GreetingCard from '$lib/components/patterns/greeting-card.svelte';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import StatGrid from '$lib/components/patterns/stat-grid.svelte';
 	import QuickActionGrid from '$lib/components/patterns/quick-action-grid.svelte';
 	import ActivityCard from '$lib/components/patterns/activity-card.svelte';
@@ -59,8 +59,16 @@
 </script>
 
 <div bind:this={pageEl} class="flex flex-col gap-4">
-	<div data-entry>
-		<GreetingCard name="Walker" streak={demo.streakDays} />
+	<div data-entry class="flex items-center justify-between">
+		<div class="flex items-center gap-3">
+			<Avatar.Root class="size-9">
+				<Avatar.Fallback class="text-xs">W</Avatar.Fallback>
+			</Avatar.Root>
+			<div>
+				<p class="text-sm font-medium leading-tight">Walker</p>
+				<p class="text-xs text-muted-foreground">Day {demo.streakDays + 1} of your streak</p>
+			</div>
+		</div>
 	</div>
 
 	<div data-entry class="flex flex-col items-center gap-4 py-6">
