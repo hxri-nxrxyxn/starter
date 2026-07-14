@@ -62,10 +62,7 @@
 <div
 	bind:this={el}
 	data-slot="onboarding-slide"
-	class={cn(
-		"flex min-h-80 w-full flex-col items-center justify-center gap-6 px-6 py-10 text-center",
-		className
-	)}
+	class={cn("flex min-h-full w-full flex-col px-6 py-8", className)}
 >
 	{#if step && totalSteps > 1}
 		<div class="flex items-center gap-1.5" data-onboarding-steps>
@@ -84,78 +81,75 @@
 		</div>
 	{/if}
 
-	{#if Icon}
-		<div class="flex items-center justify-center">
-			<Icon class="size-16 text-primary" />
+	<div class="flex flex-1 flex-col items-center justify-center gap-6 text-center">
+		{#if Icon}
+			<div class="flex items-center justify-center">
+				<Icon class="size-16 text-primary" />
+			</div>
+		{/if}
+
+		<div class="flex flex-col gap-2">
+			<h2 class="text-2xl font-bold tracking-tight">{title}</h2>
+			{#if description}
+				<p class="text-muted-foreground mx-auto max-w-sm text-balance text-sm leading-relaxed">
+					{description}
+				</p>
+			{/if}
 		</div>
-	{/if}
 
-	<h2 class="text-2xl font-bold tracking-tight">{title}</h2>
-
-	{#if description}
-		<p class="text-muted-foreground mx-auto max-w-sm text-balance text-sm leading-relaxed">
-			{description}
-		</p>
-	{/if}
-
-	{#if choices.length > 0}
-		<div class="flex w-full max-w-sm flex-col gap-2.5">
-			{#each choices as choice (choice.id)}
-				<button
-					type="button"
-					data-choice
-					onclick={() => onSelect?.(choice.id)}
-					class={cn(
-						"flex w-full items-center gap-3 rounded-xl border px-4 py-3.5 text-left text-sm font-medium transition-all duration-150",
-						selected === choice.id
-							? "border-primary bg-primary/10 text-primary ring-1 ring-primary"
-							: "border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent"
-					)}
-				>
-					{#if choice.icon}
-						<choice.icon class="size-5 shrink-0" />
-					{/if}
-					<div class="min-w-0 flex-1">
-						<span>{choice.label}</span>
-						{#if choice.description}
-							<p class="text-muted-foreground mt-0.5 text-xs font-normal">{choice.description}</p>
-						{/if}
-					</div>
-					<div
+		{#if choices.length > 0}
+			<div class="flex w-full max-w-sm flex-col gap-2.5">
+				{#each choices as choice (choice.id)}
+					<button
+						type="button"
+						data-choice
+						onclick={() => onSelect?.(choice.id)}
 						class={cn(
-							"flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150",
-							selected === choice.id ? "border-primary bg-primary" : "border-muted-foreground/30"
+							"flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm font-medium transition-all",
+							selected === choice.id
+								? "border-primary bg-primary/10 text-primary"
+								: "border-border bg-card text-foreground hover:bg-accent"
 						)}
 					>
-						{#if selected === choice.id}
-							<svg class="size-3 text-primary-foreground" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M3 8l3.5 3.5L13 4" />
-							</svg>
+						{#if choice.icon}
+							<div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted">
+								<choice.icon class="size-4" />
+							</div>
 						{/if}
-					</div>
-				</button>
-			{/each}
-		</div>
-	{/if}
+						<div class="min-w-0 flex-1">
+							<div class="flex items-center gap-2">
+								<span>{choice.label}</span>
+							</div>
+							{#if choice.description}
+								<p class="text-muted-foreground mt-0.5 text-xs font-normal">{choice.description}</p>
+							{/if}
+						</div>
+						<div
+							class={cn(
+								"flex size-4 shrink-0 items-center justify-center rounded-full border transition-all",
+								selected === choice.id ? "border-primary bg-primary" : "border-input"
+							)}
+						>
+							{#if selected === choice.id}
+								<div class="size-1.5 rounded-full bg-primary-foreground"></div>
+							{/if}
+						</div>
+					</button>
+				{/each}
+			</div>
+		{/if}
+	</div>
 
-	<div class="flex flex-col items-center gap-2">
+	<div class="mt-auto flex flex-col items-center gap-2 pt-8">
 		{#if onAction}
-			<Button
-				size="lg"
-				class="min-w-40 px-8 py-5 text-base"
-				onclick={onAction}
-			>
+			<Button size="lg" class="w-full" onclick={onAction}>
 				{actionLabel}
 			</Button>
 		{/if}
 		{#if onSecondary}
-			<button
-				type="button"
-				onclick={onSecondary}
-				class="text-muted-foreground hover:text-foreground cursor-pointer text-sm font-medium transition-colors"
-			>
+			<Button variant="link" size="sm" onclick={onSecondary} class="text-muted-foreground">
 				{actionSecondary}
-			</button>
+			</Button>
 		{/if}
 	</div>
 </div>

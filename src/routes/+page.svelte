@@ -204,7 +204,7 @@
 			</div>
 		</header>
 
-		<main bind:this={mainEl} class="flex-1 overflow-y-auto p-4">
+		<main bind:this={mainEl} class={cn("flex-1", section === 'onboarding' ? "flex flex-col overflow-y-auto" : "overflow-y-auto p-4")}>
 			<OfflineBanner />
 
 			{#if section === 'dashboard'}
@@ -264,8 +264,7 @@
 				</div>
 
 			{:else if section === 'onboarding'}
-				<div class="flex flex-col">
-					{#if onboardingStep === 1}
+				{#if onboardingStep === 1}
 						<OnboardingSlide
 							icon={Sparkles}
 							title="Welcome to App Starter"
@@ -340,7 +339,6 @@
 							totalSteps={totalOnboardingSteps}
 						/>
 					{/if}
-				</div>
 
 			{:else if section === 'social'}
 				<div class="flex flex-col gap-4">
