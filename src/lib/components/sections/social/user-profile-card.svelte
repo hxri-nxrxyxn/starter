@@ -74,10 +74,10 @@
 	}
 </script>
 
-<Card.Root bind:ref={cardEl} class={cn('w-full max-w-sm pt-(--card-spacing)', className)}>
+<Card.Root bind:ref={cardEl} class={cn('w-full max-w-sm overflow-hidden', className)}>
 
-	<div class="relative px-(--card-spacing)">
-		<div class="-mt-8 flex items-end gap-3">
+	<div class="relative px-(--card-spacing) pt-(--card-spacing)">
+		<div class="flex items-end gap-3">
 			<Avatar.Root size="lg" class="ring-background z-10 ring-2">
 				{#if avatarSrc}
 					<Avatar.Image src={avatarSrc} alt={userName} />

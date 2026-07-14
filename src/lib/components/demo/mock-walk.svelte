@@ -58,10 +58,10 @@ async function handleWalk() {
 <div class={cn('relative inline-flex', className)}>
 	<Button onclick={handleWalk} disabled={loading}>
 		{#if loading}
-			<Loader2Icon class="size-4 animate-spin" />
+			<Loader2Icon data-icon="inline-start" class="animate-spin" />
 			Walking...
 		{:else}
-			<FootprintsIcon class="size-4" />
+			<FootprintsIcon data-icon="inline-start" />
 			Take a Walk
 		{/if}
 	</Button>

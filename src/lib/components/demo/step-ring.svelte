@@ -8,7 +8,7 @@ let { class: className }: { class?: string } = $props();
 
 <div class={cn('relative inline-flex items-center justify-center', className)}>
 	<ProgressRing value={demo.progressPercent} size={160} strokeWidth={8} variant="default" />
-	<div class="absolute flex flex-col items-center">
+	<div class="absolute inset-0 flex flex-col items-center justify-center">
 		<span class="font-display text-3xl font-bold tabular-nums">{demo.steps.toLocaleString()}</span>
 		<span class="text-xs text-muted-foreground">of {demo.dailyGoal.toLocaleString()} steps</span>
 	</div>

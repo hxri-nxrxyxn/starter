@@ -75,7 +75,7 @@
 								disabled={demo.minutes <= 0 || !!demo.activeSession}
 								onclick={() => handleStartSession(site.id)}
 							>
-								<TimerIcon class="size-3.5" />
+								<TimerIcon data-icon="inline-start" />
 								Start 5min
 							</Button>
 						{/if}
