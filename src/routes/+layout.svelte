@@ -1,26 +1,12 @@
 <script lang="ts">
 	import { app } from '$lib/stores/app.svelte';
-	import { nav } from '$lib/stores/nav.svelte.js';
 	import '$lib/app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Toaster from '$lib/components/ui/sonner/sonner.svelte';
-	import BottomNavigation from '$lib/components/patterns/bottom-navigation.svelte';
 	import { gsap } from '$lib/animate/index.js';
 	import { onMount } from 'svelte';
-	import { demo } from '$lib/stores/demo.svelte.js';
-	import FootprintsIcon from '@lucide/svelte/icons/footprints';
-	import TimerIcon from '@lucide/svelte/icons/timer';
-	import UserIcon from '@lucide/svelte/icons/user';
 
 	let { children } = $props();
-
-	const navItems = [
-		{ icon: FootprintsIcon, label: 'Dashboard', route: 'dashboard' },
-		{ icon: TimerIcon, label: 'Sessions', route: 'sessions' },
-		{ icon: UserIcon, label: 'Profile', route: 'profile' },
-	];
-
-	let section = $state('dashboard');
 
 	let gridEl: SVGSVGElement | null = $state(null);
 
@@ -50,18 +36,13 @@
 		mql.addEventListener('change', handler);
 		return () => mql.removeEventListener('change', handler);
 	});
-
-	$effect(() => {
-		if (demo.activeSession) demo.resumeSessionTimer();
-		return () => demo.endSession();
-	});
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex h-dvh flex-col bg-background">
+<div class="mx-auto flex min-h-dvh max-w-2xl flex-col bg-background">
 	<svg
 		bind:this={gridEl}
 		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.09]"
@@ -76,10 +57,9 @@
 		<rect width="100%" height="100%" fill="url(#grid)" />
 	</svg>
 
-	<main class="relative z-10 flex-1 overflow-y-auto px-4 pb-20 pt-4">
+	<main class="relative z-10 flex-1 overflow-y-auto p-4">
 		{@render children()}
 	</main>
-
-	<BottomNavigation items={navItems} activeRoute={nav.current} onSelect={(r) => nav.current = r} />
-	<Toaster position="top-center" richColors />
 </div>
+
+<Toaster position="top-center" richColors />
