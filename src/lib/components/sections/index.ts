@@ -21,6 +21,7 @@ export { default as CategoryGrid } from './discovery/category-grid.svelte';
 export { default as TrendingCarousel } from './discovery/trending-carousel.svelte';
 
 // Home / Eye Candy
+export { default as BigTimer } from './home/big-timer.svelte';
 export { default as HeroSection } from './home/hero-section.svelte';
 export { default as FeatureGrid } from './home/feature-grid.svelte';
 export { default as TestimonialCarousel } from './home/testimonial-carousel.svelte';
