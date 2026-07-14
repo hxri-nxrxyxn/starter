@@ -24,53 +24,51 @@
     class: className
   }: Props = $props();
 
-  let container: HTMLParagraphElement;
-  let charEls: HTMLSpanElement[] = $state([]);
+  let charEls: HTMLSpanElement[] = [];
 
   let characters = $derived(text.split(''));
 
-  let tween: gsap.core.Tween | gsap.core.Timeline | null = null;
+  let tween: gsap.core.Timeline | null = null;
 
   $effect(() => {
     const _ = text;
     charEls = [];
 
-    const frame = requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       const targets = charEls.filter(Boolean);
       if (targets.length === 0) return;
 
       tween?.kill();
 
-      const vars: gsap.TweenVars = {
-        fontWeight: toWeight,
-        rotation: () => gsap.utils.random(-3, 3),
-        duration,
-        ease: 'premium-smooth',
-        stagger,
-        onComplete
-      };
+      const tl = gsap.timeline({ onComplete });
 
-      if (loop) {
-        vars.yoyo = true;
-        vars.repeat = -1;
-      }
+      targets.forEach((el, i) => {
+        tl.fromTo(el,
+          { '--wght': fromWeight, rotation: -5, opacity: 0 },
+          { '--wght': toWeight, rotation: 3, opacity: 1, duration, ease: 'premium-smooth' },
+          i * stagger
+        );
+        if (loop) {
+          tl.to(el, { '--wght': fromWeight, rotation: 0, duration: duration * 0.5, ease: 'sine.inOut' });
+          tl.to(el, { '--wght': toWeight, rotation: 3, duration: duration * 0.5, ease: 'sine.inOut' });
+        }
+      });
 
-      tween = gsap.fromTo(targets, { fontWeight: fromWeight, rotation: 0 }, vars);
+      tween = tl;
     });
 
     return () => {
-      cancelAnimationFrame(frame);
       tween?.kill();
       tween = null;
     };
   });
 </script>
 
-<p bind:this={container} class={cn('text-6xl font-bold tracking-tight', className)}>
+<p class={cn('text-6xl font-bold tracking-tight', className)}>
   {#each characters as char, i (i)}
     <span
       class="inline-block"
-      style="font-variation-settings: 'wght' {fromWeight};"
+      style="font-variation-settings: 'wght' var(--wght, {fromWeight}); --wght: {fromWeight};"
       bind:this={charEls[i]}
     >
       {char === ' ' ? '\u00A0' : char}
