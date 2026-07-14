@@ -11,51 +11,51 @@ import XIcon from '@lucide/svelte/icons/x';
 let { class: className }: { class?: string } = $props();
 
 let overlayEl: HTMLElement | null = $state(null);
-let timerEl: HTMLElement | null = $state(null);
 let contentEl: HTMLElement | null = $state(null);
+let glowEl: HTMLElement | null = $state(null);
+let timerEl: HTMLElement | null = $state(null);
 
 onMount(() => {
 	if (!overlayEl) return;
 	const ctx = gsap.context(() => {
-		gsap.from(overlayEl, { opacity: 0, scale: 0.95, duration: 0.3, ease: 'premium-smooth' });
+		gsap.from(overlayEl, { opacity: 0, duration: 0.25, ease: 'power2.out' });
 		if (contentEl) {
-			gsap.from(contentEl.children, {
+			gsap.from(contentEl.querySelectorAll('[data-anim]'), {
 				opacity: 0,
-				y: 15,
-				scale: 0.95,
-				duration: 0.35,
-				stagger: 0.08,
-				ease: 'premium-smooth',
+				y: 20,
+				duration: 0.4,
+				stagger: 0.1,
+				ease: 'power2.out',
+			});
+		}
+		if (glowEl) {
+			gsap.to(glowEl, {
+				scale: 1.15,
+				opacity: 0.6,
+				duration: 2.5,
+				ease: 'sine.inOut',
+				repeat: -1,
+				yoyo: true,
 			});
 		}
 	}, overlayEl);
+
 	return () => ctx.revert();
 });
 
-let pulseTween: gsap.core.Tween | null = $state(null);
-
 $effect(() => {
-	if (!timerEl) return;
-	const shouldPulse = demo.sessionRemaining < 30 && demo.sessionRemaining > 0;
-	if (shouldPulse && !pulseTween) {
-		pulseTween = gsap.to(timerEl, {
-			scale: 1.05,
-			duration: 0.5,
-			ease: 'sine.inOut',
-			yoyo: true,
-			repeat: -1,
-		});
-	} else if (!shouldPulse && pulseTween) {
-		pulseTween.kill();
-		pulseTween = null;
-		gsap.set(timerEl, { scale: 1 });
-	}
-	return () => {
-		if (pulseTween) {
-			pulseTween.kill();
-			pulseTween = null;
-		}
-	};
+	if (!timerEl || !glowEl) return;
+	const isLow = demo.sessionRemaining < 30 && demo.sessionRemaining > 0;
+	gsap.to(timerEl, {
+		color: isLow ? 'var(--color-amber-500)' : 'var(--color-foreground)',
+		duration: 0.3,
+		ease: 'power2.out',
+		overwrite: 'auto',
+	});
+	gsap.to(glowEl, {
+		duration: isLow ? 0.8 : 2.5,
+		overwrite: 'auto',
+	});
 });
 
 function endSession() {
@@ -72,30 +72,43 @@ onDestroy(() => {
 		bind:this={overlayEl}
 		role="dialog"
 		aria-modal="true"
-		class={cn('fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background/80 backdrop-blur-sm', className)}
+		class={cn('fixed inset-0 z-50 flex flex-col items-center justify-center bg-background', className)}
 	>
-		<button onclick={endSession} class="absolute right-4 top-4 p-2 text-muted-foreground hover:text-foreground">
+		<button
+			onclick={endSession}
+			class="absolute right-4 top-4 z-10 p-2 text-muted-foreground hover:text-foreground"
+			aria-label="End session"
+		>
 			<XIcon class="size-6" />
 		</button>
 
-		<div bind:this={contentEl} class="flex flex-col items-center gap-8">
-			<div class="flex flex-col items-center gap-2">
+		<div bind:this={contentEl} class="relative flex flex-col items-center">
+			<div
+				bind:this={glowEl}
+				class="pointer-events-none absolute left-1/2 top-1/2 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-3xl"
+			></div>
+
+			<div data-anim class="relative z-10 mb-4 flex flex-col items-center gap-2">
 				{#if demo.activeSession === 'instagram'}
-					<CameraIcon class="size-12 text-pink-500" />
+					<CameraIcon class="size-8 text-muted-foreground" />
 				{:else if demo.activeSession === 'youtube'}
-					<PlaySquareIcon class="size-12 text-red-500" />
+					<PlaySquareIcon class="size-8 text-muted-foreground" />
 				{/if}
-				<span class="text-lg font-medium text-muted-foreground">Unlocked</span>
+				<span class="text-sm font-medium text-muted-foreground">Unlocked</span>
 			</div>
 
 			<span
 				bind:this={timerEl}
-				class={cn('font-display text-7xl font-bold tabular-nums', demo.sessionRemaining < 30 && 'text-amber-500')}
+				data-anim
+				class="font-display font-bold tabular-nums leading-none tracking-tight text-foreground"
+				style="font-size: 38vh;"
 			>
 				{demo.formatDuration(demo.sessionRemaining)}
 			</span>
 
-			<Button variant="destructive" onclick={endSession}>End Session</Button>
+			<div data-anim class="relative z-10 mt-8">
+				<Button variant="destructive" onclick={endSession}>End Session</Button>
+			</div>
 		</div>
 	</div>
 {/if}
