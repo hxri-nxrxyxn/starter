@@ -50,19 +50,16 @@
 <div class="flex h-dvh flex-col bg-background">
 	<svg
 		bind:this={gridEl}
-		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.07]"
+		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.09]"
+		style="transform: perspective(500px) rotateX(9deg) scale(0.95);"
 		preserveAspectRatio="none"
 	>
 		<defs>
-			<filter id="warp" x="-10%" y="-10%" width="120%" height="120%">
-				<feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
-				<feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" />
-			</filter>
 			<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
 				<path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5" />
 			</pattern>
 		</defs>
-		<rect width="100%" height="100%" fill="url(#grid)" filter="url(#warp)" />
+		<rect width="100%" height="100%" fill="url(#grid)" />
 	</svg>
 	<main class="relative z-10 flex-1 overflow-y-auto" class:px-4={!isOnboarding} class:pt-4={!isOnboarding} class:pb-20={!isOnboarding}>
 		{@render children()}
