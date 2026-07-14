@@ -44,7 +44,7 @@
 	</div>
 
 	<div class="flex flex-col gap-2">
-		<h2 class="text-sm font-semibold text-muted-foreground">Blocked Apps</h2>
+		<h2 class="text-lg font-semibold tracking-tight">Blocked Apps</h2>
 		<div bind:this={listEl} class="flex flex-col gap-3">
 			<Card.Root data-site-card>
 				<Card.Content class="flex items-center gap-4 py-5">
@@ -99,9 +99,11 @@
 	<LeaderboardPanel />
 
 	{#if demo.minutes <= 0 && !demo.activeSession}
-		<p class="pointer-events-none select-none text-center text-xs text-muted-foreground/20 py-12">
-			No minutes available — walk to earn screen time
-		</p>
+		<div class="flex flex-col items-center gap-2 py-12 text-center">
+			<TimerIcon class="size-8 text-muted-foreground/40" />
+			<p class="text-sm font-medium text-muted-foreground/60">No minutes available</p>
+			<p class="text-xs text-muted-foreground/40">Walk to earn screen time — 1000 steps = 1 minute</p>
+		</div>
 	{/if}
 </div>
 
