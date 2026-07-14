@@ -50,7 +50,7 @@
 	});
 </script>
 
-<div class="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col bg-background">
+<div class="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col">
 	<header class="sticky top-0 z-50 border-b bg-background px-4 py-3">
 		<div class="flex items-center justify-between">
 			<h1 class="text-lg font-bold">App Starter</h1>
