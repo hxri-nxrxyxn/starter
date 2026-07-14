@@ -7,12 +7,10 @@
 	import { demo } from '$lib/stores/demo.svelte.js';
 	import type { BlockedSite } from '$lib/stores/demo.svelte.js';
 	import SessionOverlay from '$lib/components/demo/session-overlay.svelte';
-	import EmptyState from '$lib/components/patterns/empty-state.svelte';
 	import { LeaderboardPanel } from '$lib/components/sections/index.js';
 	import CameraIcon from '@lucide/svelte/icons/camera';
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import TimerIcon from '@lucide/svelte/icons/timer';
-	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 
 	let listEl: HTMLElement | null = $state(null);
 
@@ -45,64 +43,65 @@
 		</div>
 	</div>
 
-	<div bind:this={listEl} class="flex flex-col gap-3">
-		<Card.Root data-site-card>
-			<Card.Content class="flex items-center gap-4 py-5">
-				<div class="flex size-12 items-center justify-center rounded-xl bg-muted">
-					<CameraIcon class="size-6 text-muted-foreground" />
-				</div>
-				<div class="flex flex-1 flex-col gap-0.5">
-					<h2 class="text-sm font-semibold">Instagram</h2>
-					<span class="text-muted-foreground text-xs">
-						{demo.minutes > 0 ? `${demo.minutes} minute${demo.minutes === 1 ? '' : 's'} available` : 'Out of minutes'}
-					</span>
-				</div>
-				<div class="flex items-center gap-2">
-					{#if demo.minutes <= 0}
-						<Badge variant="secondary">Out of minutes</Badge>
-					{:else}
-						<Button size="sm" disabled={!!demo.activeSession} onclick={() => handleStartSession('instagram')}>
-							<TimerIcon data-icon="inline-start" />
-							Start 5min
-						</Button>
-					{/if}
-				</div>
-			</Card.Content>
-		</Card.Root>
+	<div class="flex flex-col gap-2">
+		<h2 class="text-sm font-semibold text-muted-foreground">Blocked Apps</h2>
+		<div bind:this={listEl} class="flex flex-col gap-3">
+			<Card.Root data-site-card>
+				<Card.Content class="flex items-center gap-4 py-5">
+					<div class="flex size-12 items-center justify-center rounded-xl bg-muted">
+						<CameraIcon class="size-6 text-muted-foreground" />
+					</div>
+					<div class="flex flex-1 flex-col gap-0.5">
+						<p class="text-sm font-semibold">Instagram</p>
+						<span class="text-muted-foreground text-xs">
+							{demo.minutes > 0 ? `${demo.minutes} minute${demo.minutes === 1 ? '' : 's'} available` : 'Out of minutes'}
+						</span>
+					</div>
+					<div class="flex items-center gap-2">
+						{#if demo.minutes <= 0}
+							<Badge variant="secondary">Out of minutes</Badge>
+						{:else}
+							<Button size="sm" disabled={!!demo.activeSession} onclick={() => handleStartSession('instagram')}>
+								<TimerIcon data-icon="inline-start" />
+								Start 5min
+							</Button>
+						{/if}
+					</div>
+				</Card.Content>
+			</Card.Root>
 
-		<LeaderboardPanel />
-
-		<Card.Root data-site-card>
-			<Card.Content class="flex items-center gap-4 py-5">
-				<div class="flex size-12 items-center justify-center rounded-xl bg-muted">
-					<PlayIcon class="size-6 text-muted-foreground" />
-				</div>
-				<div class="flex flex-1 flex-col gap-0.5">
-					<h2 class="text-sm font-semibold">YouTube</h2>
-					<span class="text-muted-foreground text-xs">
-						{demo.minutes > 0 ? `${demo.minutes} minute${demo.minutes === 1 ? '' : 's'} available` : 'Out of minutes'}
-					</span>
-				</div>
-				<div class="flex items-center gap-2">
-					{#if demo.minutes <= 0}
-						<Badge variant="secondary">Out of minutes</Badge>
-					{:else}
-						<Button size="sm" disabled={!!demo.activeSession} onclick={() => handleStartSession('youtube')}>
-							<TimerIcon data-icon="inline-start" />
-							Start 5min
-						</Button>
-					{/if}
-				</div>
-			</Card.Content>
-		</Card.Root>
+			<Card.Root data-site-card>
+				<Card.Content class="flex items-center gap-4 py-5">
+					<div class="flex size-12 items-center justify-center rounded-xl bg-muted">
+						<PlayIcon class="size-6 text-muted-foreground" />
+					</div>
+					<div class="flex flex-1 flex-col gap-0.5">
+						<p class="text-sm font-semibold">YouTube</p>
+						<span class="text-muted-foreground text-xs">
+							{demo.minutes > 0 ? `${demo.minutes} minute${demo.minutes === 1 ? '' : 's'} available` : 'Out of minutes'}
+						</span>
+					</div>
+					<div class="flex items-center gap-2">
+						{#if demo.minutes <= 0}
+							<Badge variant="secondary">Out of minutes</Badge>
+						{:else}
+							<Button size="sm" disabled={!!demo.activeSession} onclick={() => handleStartSession('youtube')}>
+								<TimerIcon data-icon="inline-start" />
+								Start 5min
+							</Button>
+						{/if}
+					</div>
+				</Card.Content>
+			</Card.Root>
+		</div>
 	</div>
 
+	<LeaderboardPanel />
+
 	{#if demo.minutes <= 0 && !demo.activeSession}
-		<EmptyState
-			icon={SparklesIcon}
-			title="No minutes available"
-			description="Go for a walk to earn screen time. Every 1000 steps unlocks 1 minute."
-		/>
+		<p class="pointer-events-none select-none text-center text-xs text-muted-foreground/20 py-12">
+			No minutes available — walk to earn screen time
+		</p>
 	{/if}
 </div>
 

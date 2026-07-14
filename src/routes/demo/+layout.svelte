@@ -49,8 +49,8 @@
 <div class="flex h-dvh flex-col bg-background">
 	<div
 		bind:this={gridEl}
-		class="pointer-events-none fixed inset-0 z-0 opacity-[0.04]"
-		style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 64px 64px;"
+		class="pointer-events-none fixed inset-0 z-0 opacity-10"
+		style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 48px 48px;"
 	></div>
 	<main class="relative z-10 flex-1 overflow-y-auto" class:px-4={!isOnboarding} class:pt-4={!isOnboarding} class:pb-20={!isOnboarding}>
 		{@render children()}
