@@ -4,6 +4,31 @@
 	import { toast } from 'svelte-sonner';
 	import { nav } from '$lib/stores/nav.svelte.js';
 	import { app } from '$lib/stores/app.svelte';
+	import { demo } from '$lib/stores/demo.svelte.js';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import StatGrid from '$lib/components/patterns/stat-grid.svelte';
+	import QuickActionGrid from '$lib/components/patterns/quick-action-grid.svelte';
+	import ActivityCard from '$lib/components/patterns/activity-card.svelte';
+	import AchievementCard from '$lib/components/patterns/achievement-card.svelte';
+	import SectionHeader from '$lib/components/patterns/section-header.svelte';
+	import { BigTimer } from '$lib/components/sections/index.js';
+	import SessionOverlay from '$lib/components/demo/session-overlay.svelte';
+	import { gsap, buttonPress } from '$lib/animate/index.js';
+	import FootprintsIcon from '@lucide/svelte/icons/footprints';
+	import CameraIcon from '@lucide/svelte/icons/camera';
+	import PlayIcon from '@lucide/svelte/icons/play';
+	import FlameIcon from '@lucide/svelte/icons/flame';
+	import CrownIcon from '@lucide/svelte/icons/crown';
+	import ZapIcon from '@lucide/svelte/icons/zap';
+	import TrophyIcon from '@lucide/svelte/icons/trophy';
+	import ActivityIcon from '@lucide/svelte/icons/activity';
+	import SparklesIcon from '@lucide/svelte/icons/sparkles';
+	import TimerIcon from '@lucide/svelte/icons/timer';
+	import TargetIcon from '@lucide/svelte/icons/target';
+	import { Sun, Moon, Monitor } from '@lucide/svelte';
 
 	let section = $derived(nav.current);
 
