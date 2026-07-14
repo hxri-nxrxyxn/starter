@@ -513,7 +513,7 @@
 						{ icon: LogOut, label: 'Delete Account', variant: 'destructive' },
 					]} />
 
-					<FloatingActionButton label="New" position="br" onClick={() => toast('FAB clicked!')} />
+					<FloatingActionButton label="New" position="br" />
 				</div>
 			{/if}
 
