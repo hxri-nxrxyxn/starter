@@ -67,7 +67,7 @@
 </script>
 
 <p bind:this={container} class={cn('text-6xl font-bold tracking-tight', className)}>
-  {#each characters as char, i (char)}
+  {#each characters as char, i (i)}
     <span
       class="inline-block"
       style="font-variation-settings: 'wght' {fromWeight};"

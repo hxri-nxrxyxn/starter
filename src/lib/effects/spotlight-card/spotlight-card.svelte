@@ -22,7 +22,7 @@
   }: Props = $props();
 
   let glowEl: HTMLDivElement;
-  let cardEl = $state<HTMLDivElement>();
+  let cardEl = $state<HTMLDivElement | null>(null);
   let container: HTMLDivElement;
 
   onMount(() => {
