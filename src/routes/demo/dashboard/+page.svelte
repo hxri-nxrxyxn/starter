@@ -75,7 +75,7 @@
 		<GreetingCard name="Walker" streak={demo.streakDays} />
 	</div>
 
-	<div data-entry>
+	<div data-entry class="flex flex-col items-center">
 		<StepRing />
 		<div class="mt-2 flex items-center justify-center gap-4 text-sm text-muted-foreground">
 			<span class="flex items-center gap-1.5">
