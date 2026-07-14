@@ -6,42 +6,10 @@
 - **Language**: TypeScript (strict)
 - **CSS**: Tailwind CSS v4
 - **UI**: shadcn-svelte v1 (Bits UI v2 primitives)
-- **Animation**: GSAP v3 (CustomEase, ScrollTrigger, TextPlugin, MotionPathPlugin)
+- **Animation**: GSAP v3 (CustomEase, ScrollTrigger)
 - **Icons**: Lucide Svelte
 - **Build**: Vite 8
-
-## Key Conventions
-
-### Svelte 5 Runes
-
-- `$state()` for reactive variables; `$state.raw()` for objects only reassigned (e.g. API responses)
-- `$derived()` / `$derived.by()` instead of `$effect` for computed values
-- `$effect()` only for side effects syncing with external libs (GSAP) or browser APIs
-- `$props()` instead of `export let`
-- `{#snippet}` / `{@render}` instead of `<slot>`
-- `onclick={handler}` instead of `on:click`
-- `{@const}` for local constants inside templates
-
-### Bind Refs
-
-- `bind:this={el}` on native HTML elements
-- `bind:ref={el}` on shadcn components (they expose `ref` via `$bindable(null)`)
-- Always initialize with `$state(null)` (not `undefined`) to match `$bindable(null)` fallback
-- Only use `$state()` on refs when used in `$effect` or `bind:this`/`bind:ref`; refs used only in `onMount` could be plain `let` but the compiler warns
-
-### Animation (GSAP)
-
-- `gsap.context(() => { ... }, element)` for scoped animations with auto-cleanup
-- Always return `() => ctx.revert()` from `onMount` or `$effect` for cleanup
-- Custom eases: `premium-bounce`, `premium-spring`, `premium-smooth`, `premium-elastic`
-- Timing: taps 150-250ms, transitions 250-450ms, celebrations 600-1200ms, ambient 10-30s
-
-### shadcn-svelte
-
-- Import pattern: `import { Button } from '$lib/components/ui/button'` or `import * as Card from '$lib/components/ui/card'`
-- Every shadcn component exposes `ref` prop via `$bindable(null)` — use `bind:ref={el}` for DOM access
-- `cn()` utility (clsx + tailwind-merge) for class merging
-- Icons from `@lucide/svelte` — use `data-btn-press` attribute on buttons to auto-attach interaction animation
+- **Toast**: svelte-sonner
 
 ## Project Structure
 
@@ -57,163 +25,164 @@ src/
 │   │   ├── transitions.ts # Screen, modal, sheet transitions
 │   │   ├── confetti.ts    # Confetti burst
 │   │   ├── actions.ts     # Svelte use:action wrappers
-│   │   └── index.ts       # Exports `gsap`, `animate` object, `ScrollTrigger`
+│   │   └── index.ts       # Exports `gsap`, `animate` object
 │   ├── components/
-│   │   ├── patterns/      # 40 reusable app pattern components
+│   │   ├── patterns/      # 40 atomic pattern components
+│   │   ├── sections/      # 28 composite blocks (feature-level)
+│   │   ├── showcase/      # 9 per-tab showcase composites
 │   │   └── ui/            # shadcn-svelte base components
 │   ├── stores/
-│   │   └── app.svelte.ts  # Global app state (theme, user, online)
-│   ├── utils.ts           # cn(), WithElementRef<T>, type utilities
-│   ├── app.css            # Tailwind + global styles
+│   │   └── app.svelte.ts  # Global app state (theme, colorScheme)
+│   ├── utils.ts           # cn(), utility types
+│   ├── app.css            # Tailwind + global styles + font config
 │   └── index.ts           # Barrel exports
-└── routes/
-    ├── +layout.svelte     # Theme, ambient bg, app shell
-    └── +page.svelte       # Demo page showcasing all patterns
+├── routes/
+│   ├── +layout.svelte     # Warped grid BG + theme + Toaster
+│   └── +page.svelte       # 9-tab component showcase (thin shell)
+└── app.html               # Google Fonts (Space Grotesk)
 ```
 
-## Animation Library (`src/lib/animate`)
+## Svelte 5 Runes — Mandatory Rules
 
-Import: `import { gsap, animate, ScrollTrigger, buttonPress } from '$lib/animate'`
+### State & Reactivity
 
-### `animate` object — semantic animation helpers
+- `$state()` for reactive variables. Objects/arrays are deeply proxied.
+- `$state.raw()` for large objects only ever reassigned (e.g. API responses).
+- `$derived(expression)` or `$derived.by(() => ...)` instead of `$effect` for computed values.
+- NEVER use `$effect` to derive values — use `$derived` or `$derived.by`.
+- `$effect()` only for side effects syncing with external libs (GSAP) or browser APIs.
 
-| Method | Parameters | Use |
-|---|---|---|
-| `animate.pageEnter(element)` | `HTMLElement` | Page entry fade-up |
-| `animate.pageExit(element)` | `HTMLElement` | Page exit fade |
-| `animate.cardEnter(element, idx?)` | `HTMLElement, number?` | Card stagger entry |
-| `animate.stagger(elements, options?)` | `HTMLElement[], {amount?, from?}` | Stagger children |
-| `animate.hero(element)` | `HTMLElement` | Hero section entrance |
-| `animate.list(element)` | `HTMLElement` | List row entry |
-| `animate.metric(element)` | `HTMLElement` | Metric number entry |
-| `animate.hierarchy(element)` | `HTMLElement` | Platform hierarchy entry |
-| `animate.buttonPress(element)` | `HTMLElement` | Tap scale feedback |
-| `animate.cardPress(element)` | `HTMLElement` | Card press feedback |
-| `animate.shake(element)` | `HTMLElement` | Error shake |
-| `animate.modalOpen(element)` | `HTMLElement` | Modal backdrop + content |
-| `animate.modalClose(element)` | `HTMLElement` | Modal reverse |
-| `animate.sheetOpen(element)` | `HTMLElement` | Bottom sheet slide-up |
-| `animate.sheetClose(element)` | `HTMLElement` | Bottom sheet slide-down |
-| `animate.fab(element)` | `HTMLElement` | FAB entry scale+rotate |
-| `animate.headerCompress(element)` | `HTMLElement` | Header compress on scroll |
-| `animate.skeletonShimmer(element)` | `HTMLElement` | Skeleton loading shimmer |
-| `animate.success(element)` | `HTMLElement` | Success checkmark burst |
-| `animate.error(element)` | `HTMLElement` | Error X shake |
-| `animate.countUp(element, start, end)` | `HTMLElement, number, number` | Number count-up |
-| `animate.toast(element)` | `HTMLElement` | Toast slide-in |
-| `animate.confetti(element)` | `HTMLElement` | Confetti burst from position |
+### Props & Events
 
-### Eases
+- `let { prop1, prop2 } = $props()` instead of `export let`.
+- `onclick={handler}` instead of `on:click`.
+- `bind:this={el}` on native HTML elements.
+- `bind:ref={el}` on shadcn components (they expose `ref` via `$bindable(null)`).
+- Always initialize refs with `$state(null)` (not `$state()` or `undefined`).
 
-```js
-'premium-bounce'  // M0,0 C0.34,1.2 0.4,1 1,1
-'premium-spring'  // M0,0 C0.2,1.3 0.35,1 1,1
-'premium-smooth'  // M0,0 C0.25,0.1 0.25,1 1,1
-'premium-elastic' // M0,0 C0.4,1.6 0.6,1 1,1
-```
+### Templates
 
-### Low-level GSAP usage pattern
+- `{#snippet name()}` / `{@render name()}` instead of `<slot>`.
+- keyed `{#each items as item (item.id)}` — never use index as key.
+- `{@const}` only inside blocks (`{#if}`, `{#each}`, `{#snippet}`).
+- Dynamic components use `<activeTab.component />` pattern.
 
+### CRITICAL: {@attach} with arrays
+
+- `{@attach}` should push to **plain arrays**, NOT `$state` arrays.
+- Pushing to `$state` arrays inside `{@attach}` creates an infinite loop (re-render → re-attach → push → re-render).
+- Always use: `let els: HTMLDivElement[] = [];` for `{@attach}` collections.
+
+### CRITICAL: class: directives
+
+- NEVER use `class:` with Tailwind opacity modifiers like `class:bg-primary/5={condition}` — the `/5` syntax breaks Svelte's parser.
+- Always use `cn()` instead: `class={cn("base-class", condition && "bg-primary/5")}`.
+
+## shadcn-svelte — Mandatory Rules
+
+### Typography
+
+- Headings use `text-foreground`, NOT `text-muted-foreground`.
+- Section `<h2>`: `class="text-lg font-semibold tracking-tight"`.
+- Descriptions/labels: `text-xs text-muted-foreground`.
+- Names/titles: `text-sm font-medium`.
+
+### Card Composition
+
+Always use proper Card structure:
 ```svelte
-<script lang="ts">
-import { gsap } from '$lib/animate';
-import { onMount } from 'svelte';
+<Card.Root>
+  <Card.Header>
+    <Card.Title>Title</Card.Title>
+    <Card.Description>Description</Card.Description>
+  </Card.Header>
+  <Card.Content>content</Card.Content>
+  <Card.Footer>actions</Card.Footer>
+</Card.Root>
+```
+Never dump everything in `Card.Content`.
 
-let el: HTMLElement | null = $state(null);
+### Icons in Buttons
 
-onMount(() => {
-  if (!el) return;
-  const ctx = gsap.context(() => {
-    gsap.from(el, { opacity: 0, y: 20, duration: 0.4, ease: 'premium-smooth' });
-  }, el);
-  return () => ctx.revert();
-});
-</script>
+- Icons inside `<Button>` must use `data-icon="inline-start"` or `data-icon="inline-end"`.
+- Do NOT add `size-*` classes to icons inside Buttons — the Button component handles sizing.
+- Example: `<SearchIcon data-icon="inline-start" />` inside `<Button>`.
+- Standalone icons (not in Button) CAN use `size-*` classes.
 
-<div bind:this={el}>content</div>
+### Other shadcn Rules
+
+- `truncate` shorthand instead of `overflow-hidden text-ellipsis whitespace-nowrap`.
+- `size-*` when width and height are equal (not `w-* h-*`).
+- `flex` with `gap-*`, never `space-x-*` or `space-y-*`.
+- Avatar always needs `Avatar.Fallback`.
+- Dialog/Sheet/Drawer always need a `Title` (can be `class="sr-only"`).
+- Use `Separator` instead of `<hr>` or border-only divs.
+- Use `Skeleton` for loading placeholders.
+- Use `Badge` instead of custom styled spans.
+- Callouts use `Alert`, empty states use `EmptyState`.
+- Use semantic colors only: `bg-background`, `text-muted-foreground`, `border`, `bg-muted`. Never raw colors.
+- No manual `dark:` color overrides — use semantic tokens.
+
+## GSAP Animation Rules
+
+- Always use `gsap.context(() => { ... }, element)` for scoped animations with auto-cleanup.
+- Always return `() => ctx.revert()` from `onMount`.
+- Custom eases: `premium-bounce`, `premium-spring`, `premium-smooth`, `premium-elastic`.
+- Timing: taps 150-250ms, transitions 250-450ms, celebrations 600-1200ms, ambient 10-30s.
+- Use `fromTo` for entry animations (explicit start/end, no flash).
+- For background/ambient animations, use `repeat: -1, yoyo: true` with `ease: 'none'` or `'sine.inOut'`.
+
+## Component Architecture
+
+### Layers
+
+```
++page.svelte (thin shell — imports 9 showcase components, tabs, renders via <activeTab.component />)
+├── showcase/home.svelte       → HeroSection, BigTimer, AnimatedStatCounter, FeatureGrid
+├── showcase/auth.svelte       → LoginForm, SignupForm, OTPForm
+├── showcase/feed.svelte       → StoryCircle, VideoCard, PostComposer, CommentSection
+├── showcase/social.svelte     → UserProfileCard, LiveIndicator, ShareSheet
+├── showcase/discovery.svelte  → SearchPage, TrendingCarousel
+├── showcase/dashboard.svelte  → CreatorDashboard, ContentAnalytics, StreakCalendar
+├── showcase/gamification.svelte → ChallengeSection, LeaderboardPanel
+├── showcase/settings.svelte   → ProfileEditForm, PremiumUpsellPage, AppSettingsPage
+└── showcase/shell.svelte      → BottomNavigation, DrawerMenu (self-contained mock data + state)
 ```
 
-## Pattern Components (`src/lib/components/patterns`)
+### Import Pattern
 
-40 components, all listed in `index.ts`. Key groups:
+- Each showcase component is self-contained with its own mock data, state, and imports.
+- `+page.svelte` only imports the 9 showcase components — no direct pattern/section imports.
+- Showcase components import from `$lib/components/patterns/`, `$lib/components/sections/`, and `$lib/components/ui/`.
+- Showcase components handle their own callback wiring (toast feedback for demos).
 
-### Dashboard
-- `GreetingCard` — `{name, avatar?, streak?, quote?, class?}`
-- `StatGrid` — `{items: StatItem[], columns?, class?}`
-- `MetricCard` — `{icon?, value, label, trend?, variant?, className?}`
-- `QuickActionGrid` — `{actions: ActionItem[], columns?, class?}`
-- `ChartCard` — `{title, period?, icon?, children, class?}`
-- `InsightCard` — `{icon?, title, description, variant?, onDismiss?, class?}`
-- `StreakWidget` — `{count, goal?, label?, className?}`
-- `HeroCard` — `{headline, description?, illustration?, icon?, ctaLabel?, onCta?, variant?, class?}`
-- `AchievementCard` — `{icon?, title, description?, unlocked?, progress?, progressMax?, rarity?, class?}`
-- `ChallengeCard` — `{icon?, title, description?, progress?, progressMax?, reward?, daysLeft?, class?}`
-- `ProgressRing` — `{value, size?, strokeWidth?, variant?, class?}`
-- `SectionHeader` — `{title, actionLabel?, onSeeAll?, class?}`
-- `ActivityCard` — `{icon?, title, description?, timestamp?, badge?, class?}`
-- `TipsCarousel` — `{tips: TipItem[], class?}`
+## Key Fixes Applied (Do Not Revert)
 
-### Social
-- `ProfileHeader` — `{name, username?, bio?, avatar?, followers?, following?, isPremium?, onEdit?, class?}`
-- `Leaderboard` — `{entries: LeaderboardEntry[], class?}`
-- `Timeline` — `{items: TimelineItem[], class?}`
-- `DetailPage` — `{hero: HeroInfo, metadata?, actions?, children, class?}`
+| Issue | Fix |
+|-------|-----|
+| `{@attach}` on `$state` array | Use plain array — infinite loop prevention |
+| `class:bg-primary/5` syntax | Use `cn()` instead |
+| `text-muted-foreground` on headings | Use `text-foreground` |
+| UserProfileCard gradient cover | Removed — clean avatar layout |
+| AppSettingsPage notifications | Inside Card.Root, not floating divs |
+| PremiumUpsellPage Popular badge | Added `z-10` |
+| HeroSection gradient gap | `-mx-4 -mt-4` to negate page padding |
+| Grid background | SVG with CSS perspective, `var(--color-foreground)` at `opacity-[0.09]` |
+| Button icons | `data-icon="inline-start"`, no `size-*` |
+| BigTimer | 35vh Space Grotesk, reusable section component |
 
-### Feedback / Modals
-- `ConfirmDialog` — `{open, title, description?, confirmLabel?, cancelLabel?, variant?, onConfirm, onCancel, class?}`
-- `SuccessDialog` — `{open, title, description?, actionLabel?, onAction?, icon?, className?}`
-- `BottomSheetActionList` — `{open, title?, actions: SheetAction[], onClose, class?}`
-- `FilterSheet` — `{open, title?, filters, selectedFilters, onFilterChange, onClear, onApply, class?}`
-- `EmptyState` — `{icon?, title, description?, actionLabel?, onAction?, class?}`
-- `ErrorState` — `{title, description?, retryLabel?, onRetry?, icon?, class?}`
-- `Toast` notifications via `svelte-sonner`
-
-### Data / Lists
-- `CalendarView` — `{month?, year?, events?, class?}`
-- `KanbanBoard` — `{columns: KanbanColumn[], class?}`
-- `PullToRefreshContainer` — `{onRefresh, children, class?}`
-- `InfiniteList` — `{items, loadMore, hasMore, loading?, renderItem, class?}`
-- `SearchHeader` — `{onSearch, placeholder?, debounce?, class?}`
-- `SearchResults` — `{query, results, loading?, onSelect, total?, class?}`
-- `SkeletonList` — `{count?, class?}`
-
-### Navigation / Shell
-- `BottomNavigation` — `{items: NavItem[], activeRoute, onSelect, class?}`
-- `AppShell` — `{navItems, activeRoute, onSelect, children, class?}`
-- `FloatingActionButton` — `{icon?, label?, variant?, onClick?, position?, class?}`
-- `SearchHeader` — (shared with data above)
-
-### Onboarding
-- `SplashScreen` — `{appName, version?, loading?, onFinish, class?}`
-- `OnboardingSlide` — `{icon?, title, description, image?, class?}`
-- `PermissionCard` — `{icon?, title, description?, granted?, onGrant, onDeny, class?}`
-
-### Settings / Misc
-- `SettingsSection` — `{title, items: SettingItem[], class?}`
-- `ColorThemeSwitcher` — `{class?}`
-- `PremiumBanner` — `{title, description?, actionLabel?, icon?, onAction?, class?}`
-- `OfflineBanner` — `{class?}`
-
-All patterns import shadcn-svelte components via `$lib/components/ui/`. Use `bind:ref` instead of wrapper `<div>` for GSAP refs.
-
-## App Store (`$lib/stores/app.svelte.ts`)
+## App Store (`src/lib/stores/app.svelte.ts`)
 
 ```ts
 import { app } from '$lib/stores/app.svelte';
 
 app.theme          // 'light' | 'dark' | 'system'
 app.colorScheme    // 'neutral' | 'blue' | 'green' | 'purple' | 'orange' | 'rose' | 'teal'
-app.user           // AppUser | null
-app.isAuthenticated
-app.isOnline
-app.isLoading
-app.isOnboarded
-app.version
+app.isOnline       // true/false
+app.version        // '1.0.0'
+app.setTheme(t)    // persists to localStorage
+app.setColorScheme(s) // persists to localStorage
 ```
-
-## shadcn-svelte UI Components
-
-Available at `$lib/components/ui/`. All use Bits UI v2 primitives. Standard components: `accordion`, `alert`, `alert-dialog`, `avatar`, `badge`, `button`, `card`, `checkbox`, `command`, `dialog`, `drawer`, `dropdown-menu`, `input`, `input-group`, `input-otp`, `navigation-menu`, `popover`, `progress`, `radio-group`, `scroll-area`, `select`, `separator`, `sheet`, `skeleton`, `slider`, `sonner`, `spinner`, `switch`, `table`, `tabs`, `textarea`, `toggle`, `toggle-group`, `tooltip`.
 
 ## Commands
 
@@ -223,18 +192,9 @@ Available at `$lib/components/ui/`. All use Bits UI v2 primitives. Standard comp
 | `npm run build` | Production build |
 | `npm run check` | Type-check (svelte-check) |
 
-## How to Add New Components
+## Load This Skill When Writing Svelte Code
 
-1. Add shadcn component: `npx shadcn-svelte add <component-name>`
-2. Create pattern: `src/lib/components/patterns/my-pattern.svelte` using Svelte 5 runes + shadcn components
-3. Export from `src/lib/components/patterns/index.ts`
-4. For animations: use `gsap.context()` in `onMount` with `bind:ref` on shadcn components
-5. Add to demo page `src/routes/+page.svelte` within appropriate section
-
-## TypeScript Strict Rules
-
-- `WithElementRef<T>` adds `ref?: U | null` to an HTML attributes type — used by shadcn components
-- `WithoutChildren<T>` / `WithoutChild<T>` / `WithoutChildrenOrChild<T>` — utility types for component prop wrappers
-- `cn(...inputs: ClassValue[])` — class merge utility (clsx + tailwind-merge)
-- Interfaces over types for public component props
-- `const` assertions (`as const`) for literal types
+- Always load `svelte-core-bestpractices` and `svelte-code-writer` skills before writing Svelte files.
+- Always load `shadcn-svelte` skill when working with UI components.
+- Always load `gsap-core` and `gsap-frameworks` when adding animations.
+- Run `npx svelte-check` after all changes — enforce 0 errors.
