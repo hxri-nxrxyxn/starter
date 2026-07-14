@@ -107,9 +107,10 @@ Reference `AGENTS.md` and `docs/components.md` for full context.
 ```
 You are building a SvelteKit app. Use this template as your starting point:
 
-1. Clone the repo or use "Use this template" on GitHub
-2. Run `npm install && npm run dev`
-3. The main page at `/` has a 9-tab showcase with all blocks
+Repo: https://github.com/hxri-nxrxyxn/starter
+
+1. Run `npx degit hxri-nxrxyxn/starter my-app && cd my-app && npm install && npm run dev`
+2. The main page at `/` has a 9-tab showcase with all blocks
 
 To copy a block into another project:
 - Open `src/lib/components/showcase/` to see which composite you need
