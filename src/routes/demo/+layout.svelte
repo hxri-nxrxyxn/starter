@@ -17,6 +17,7 @@
 	];
 
 	let activeRoute = $derived($page.url.pathname);
+	let isOnboarding = $derived($page.url.pathname.includes('/onboarding'));
 
 	$effect(() => {
 		if (demo.activeSession) {
@@ -29,9 +30,11 @@
 </script>
 
 <div class="flex h-dvh flex-col bg-background">
-	<main class="flex-1 overflow-y-auto px-4 pb-20 pt-4">
+	<main class="flex-1 overflow-y-auto" class:px-4={!isOnboarding} class:pt-4={!isOnboarding} class:pb-20={!isOnboarding}>
 		{@render children()}
 	</main>
-	<BottomNavigation items={navItems} {activeRoute} onSelect={(r) => goto(r)} />
+	{#if !isOnboarding}
+		<BottomNavigation items={navItems} {activeRoute} onSelect={(r) => goto(r)} />
+	{/if}
 	<Toaster />
 </div>

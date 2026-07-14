@@ -74,8 +74,7 @@
 	}
 </script>
 
-<Card.Root bind:ref={cardEl} class={cn('w-full max-w-sm overflow-hidden', className)}>
-	<div class="from-primary/20 to-primary/10 h-24 bg-gradient-to-r"></div>
+<Card.Root bind:ref={cardEl} class={cn('w-full max-w-sm pt-(--card-spacing)', className)}>
 
 	<div class="relative px-(--card-spacing)">
 		<div class="-mt-8 flex items-end gap-3">

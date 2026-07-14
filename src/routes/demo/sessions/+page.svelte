@@ -8,7 +8,6 @@
 	import { demo } from '$lib/stores/demo.svelte.js';
 	import type { BlockedSite } from '$lib/stores/demo.svelte.js';
 	import SessionOverlay from '$lib/components/demo/session-overlay.svelte';
-	import MinuteTimer from '$lib/components/demo/minute-timer.svelte';
 	import EmptyState from '$lib/components/patterns/empty-state.svelte';
 	import CameraIcon from '@lucide/svelte/icons/camera';
 	import PlayIcon from '@lucide/svelte/icons/play';
@@ -16,8 +15,8 @@
 	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 
 	const sites = [
-		{ id: 'instagram' as BlockedSite, name: 'Instagram', icon: CameraIcon, color: 'text-pink-500' },
-		{ id: 'youtube' as BlockedSite, name: 'YouTube', icon: PlayIcon, color: 'text-red-500' },
+		{ id: 'instagram' as BlockedSite, name: 'Instagram', icon: CameraIcon },
+		{ id: 'youtube' as BlockedSite, name: 'YouTube', icon: PlayIcon },
 	];
 
 	let listEl: HTMLElement | null = $state(null);
@@ -45,7 +44,10 @@
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h1 class="text-xl font-bold">Unlock Apps</h1>
-		<MinuteTimer />
+		<div class="flex items-center gap-1.5 rounded-full border bg-muted px-3 py-1 text-sm font-medium tabular-nums">
+			<TimerIcon class="size-3.5 text-muted-foreground" />
+			{demo.minutes} min
+		</div>
 	</div>
 
 	<div bind:this={listEl} class="flex flex-col gap-3">
@@ -53,8 +55,8 @@
 			{@const SiteIcon = site.icon}
 			<Card.Root data-site-card>
 				<Card.Content class="flex items-center gap-4 py-5">
-					<div class={cn('flex size-12 items-center justify-center rounded-xl bg-muted', site.color)}>
-						<SiteIcon class="size-6" />
+					<div class="flex size-12 items-center justify-center rounded-xl bg-muted">
+						<SiteIcon class="size-6 text-muted-foreground" />
 					</div>
 					<div class="flex flex-1 flex-col gap-0.5">
 						<span class="font-semibold">{site.name}</span>

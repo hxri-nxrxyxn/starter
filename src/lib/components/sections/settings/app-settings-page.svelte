@@ -1,9 +1,11 @@
 <script lang="ts">
 	import SettingsSection from '$lib/components/patterns/settings-section.svelte';
 	import ColorThemeSwitcher from '$lib/components/patterns/color-theme-switcher.svelte';
-	import { app } from '$lib/stores/app.svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
+	import { app } from '$lib/stores/app.svelte';
 	import { cn } from '$lib/utils.js';
 	import { gsap } from '$lib/animate/index.js';
 	import { onMount } from 'svelte';
@@ -64,63 +66,80 @@
 	</div>
 
 	<div data-settings-section>
-		<SettingsSection
-			title="Appearance"
-			description="Customize how the app looks"
-			items={[
-				{
-					icon: themes.find(t => t.value === app.theme)?.icon ?? MonitorIcon,
-					label: 'Theme',
-					description: `Current: ${app.theme.charAt(0).toUpperCase() + app.theme.slice(1)}`,
-					onClick: cycleTheme,
-				},
-			]}
-		/>
-		<div class="px-(--card-spacing) pb-4">
-			<ColorThemeSwitcher />
-		</div>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Appearance</Card.Title>
+				<Card.Description>Customize how the app looks</Card.Description>
+			</Card.Header>
+			<Card.Content class="flex flex-col p-0">
+				<div class="flex items-center justify-between px-(--card-spacing) py-3">
+					<div class="flex items-center gap-3">
+						{#if app.theme === 'light'}
+							<SunIcon class="size-5 shrink-0 text-muted-foreground" />
+						{:else if app.theme === 'dark'}
+							<MoonIcon class="size-5 shrink-0 text-muted-foreground" />
+						{:else}
+							<MonitorIcon class="size-5 shrink-0 text-muted-foreground" />
+						{/if}
+						<div class="flex flex-col">
+							<span class="text-sm font-medium">Theme</span>
+							<span class="text-muted-foreground text-xs">Current: {app.theme.charAt(0).toUpperCase() + app.theme.slice(1)}</span>
+						</div>
+					</div>
+					<Button variant="outline" size="sm" onclick={cycleTheme}>
+						{app.theme === 'light' ? 'Light' : app.theme === 'dark' ? 'Dark' : 'System'}
+					</Button>
+				</div>
+				<Separator />
+				<div class="flex flex-col gap-2 px-(--card-spacing) py-3">
+					<span class="text-sm font-medium">Accent Color</span>
+					<ColorThemeSwitcher />
+				</div>
+			</Card.Content>
+		</Card.Root>
 	</div>
 
 	<div data-settings-section>
-		<SettingsSection
-			title="Notifications"
-			description="Control notification preferences"
-			items={[]}
-		/>
-		<div class="flex flex-col px-(--card-spacing) pb-1">
-			<div class="flex items-center justify-between py-2">
-				<div class="flex items-center gap-3">
-					<BellIcon class="size-5 shrink-0 text-muted-foreground" />
-					<div class="flex flex-col">
-						<span class="text-sm font-medium">Push Notifications</span>
-						<span class="text-muted-foreground text-xs">Receive push alerts</span>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Notifications</Card.Title>
+				<Card.Description>Control notification preferences</Card.Description>
+			</Card.Header>
+			<Card.Content class="flex flex-col p-0">
+				<div class="flex items-center justify-between px-(--card-spacing) py-3">
+					<div class="flex items-center gap-3">
+						<BellIcon class="size-5 shrink-0 text-muted-foreground" />
+						<div class="flex flex-col">
+							<span class="text-sm font-medium">Push Notifications</span>
+							<span class="text-muted-foreground text-xs">Receive push alerts</span>
+						</div>
 					</div>
+					<Switch bind:checked={pushEnabled} />
 				</div>
-				<Switch bind:checked={pushEnabled} />
-			</div>
-			<Separator />
-			<div class="flex items-center justify-between py-2">
-				<div class="flex items-center gap-3">
-					<SmartphoneIcon class="size-5 shrink-0 text-muted-foreground" />
-					<div class="flex flex-col">
-						<span class="text-sm font-medium">Email Notifications</span>
-						<span class="text-muted-foreground text-xs">Receive email updates</span>
+				<Separator />
+				<div class="flex items-center justify-between px-(--card-spacing) py-3">
+					<div class="flex items-center gap-3">
+						<SmartphoneIcon class="size-5 shrink-0 text-muted-foreground" />
+						<div class="flex flex-col">
+							<span class="text-sm font-medium">Email Notifications</span>
+							<span class="text-muted-foreground text-xs">Receive email updates</span>
+						</div>
 					</div>
+					<Switch bind:checked={emailEnabled} />
 				</div>
-				<Switch bind:checked={emailEnabled} />
-			</div>
-			<Separator />
-			<div class="flex items-center justify-between py-2">
-				<div class="flex items-center gap-3">
-					<SmartphoneIcon class="size-5 shrink-0 text-muted-foreground" />
-					<div class="flex flex-col">
-						<span class="text-sm font-medium">SMS Notifications</span>
-						<span class="text-muted-foreground text-xs">Receive text messages</span>
+				<Separator />
+				<div class="flex items-center justify-between px-(--card-spacing) py-3">
+					<div class="flex items-center gap-3">
+						<SmartphoneIcon class="size-5 shrink-0 text-muted-foreground" />
+						<div class="flex flex-col">
+							<span class="text-sm font-medium">SMS Notifications</span>
+							<span class="text-muted-foreground text-xs">Receive text messages</span>
+						</div>
 					</div>
+					<Switch bind:checked={smsEnabled} />
 				</div>
-				<Switch bind:checked={smsEnabled} />
-			</div>
-		</div>
+			</Card.Content>
+		</Card.Root>
 	</div>
 
 	<div data-settings-section>
