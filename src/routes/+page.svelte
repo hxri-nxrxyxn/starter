@@ -14,11 +14,10 @@
 	import Gamification from '$lib/components/showcase/gamification.svelte';
 	import Settings from '$lib/components/showcase/settings.svelte';
 	import Shell from '$lib/components/showcase/shell.svelte';
-	import Effects from '$lib/components/showcase/effects.svelte';
 	import { RewardPopup } from '$lib/components/sections/index.js';
 
 	import {
-		Activity, Star, Users, MessageCircle, Search, Layout, Layers, Trophy, Settings as SettingsIcon, Grid3x3, Sparkles,
+		Activity, Star, Users, MessageCircle, Search, Layout, Layers, Trophy, Settings as SettingsIcon, Grid3x3,
 		Sun, Moon, Monitor
 	} from '@lucide/svelte';
 
@@ -36,7 +35,6 @@
 		{ id: 'gamification', component: Gamification, icon: Trophy },
 		{ id: 'settings', component: Settings, icon: SettingsIcon },
 		{ id: 'shell', component: Shell, icon: Grid3x3 },
-		{ id: 'effects', component: Effects, icon: Sparkles },
 	];
 
 	let activeTab = $derived(tabs.find(t => t.id === section) ?? tabs[0]);

@@ -101,3 +101,46 @@ Reference `AGENTS.md` and `docs/components.md` for full context.
 - **GSAP**: `gsap.context(() => {...}, element)` with cleanup via `ctx.revert()`
 - **No `class:` with `/` modifiers**: Use `cn("base", condition && "bg-primary/5")` instead
 - **`{@attach}` arrays**: Use plain arrays, never `$state` arrays (infinite loop prevention)
+
+## AI Quick Start — Copy This Block
+
+```
+You are building a SvelteKit app. Use this template as your starting point:
+
+1. Clone the repo or use "Use this template" on GitHub
+2. Run `npm install && npm run dev`
+3. The main page at `/` has a 9-tab showcase with all blocks
+
+To copy a block into another project:
+- Open `src/lib/components/showcase/` to see which composite you need
+- Find the actual component in `src/lib/components/sections/`
+- Copy it AND the patterns it imports from `src/lib/components/patterns/`
+- The 28 composites in `sections/` are self-contained with mock data — swap callbacks for real API calls
+
+Always load these skills before writing code:
+- svelte-core-bestpractices (Svelte 5 runes)
+- svelte-code-writer (validation)
+- shadcn-svelte (UI rules — data-icon, Card composition, typography)
+- gsap-core + gsap-frameworks (GSAP animations)
+
+Stack:
+- SvelteKit 2 + Svelte 5 runes
+- Tailwind CSS v4 + shadcn-svelte
+- GSAP v3 (CustomEase, ScrollTrigger)
+- Lucide Svelte icons
+- svelte-sonner toast
+- Space Grotesk font (display/headings)
+- TypeScript strict
+
+Key non-negotiable rules:
+- `<h2>` → `class="text-lg font-semibold tracking-tight"`
+- Icons in `<Button>` → `<Icon data-icon="inline-start" />`
+- Card → `Card.Root > Card.Header + Card.Content + Card.Footer`
+- GSAP → `gsap.context(() => {...}, el)` with cleanup via `ctx.revert()`
+- No `class:` with Tailwind opacity modifiers — use `cn()` instead
+- `{@attach}` → push to plain arrays, NOT `$state` arrays
+- `bind:ref` → initialize with `$state(null)`
+- `$state()` for reactive, `$derived()` for computed, `$effect()` only for side effects
+
+Reference AGENTS.md and docs/components.md for full context.
+```
