@@ -5,11 +5,9 @@
 	import GreetingCard from '$lib/components/patterns/greeting-card.svelte';
 	import StatGrid from '$lib/components/patterns/stat-grid.svelte';
 	import QuickActionGrid from '$lib/components/patterns/quick-action-grid.svelte';
-	import StreakWidget from '$lib/components/patterns/streak-widget.svelte';
 	import ActivityCard from '$lib/components/patterns/activity-card.svelte';
 	import AchievementCard from '$lib/components/patterns/achievement-card.svelte';
 	import SectionHeader from '$lib/components/patterns/section-header.svelte';
-	import StepRing from '$lib/components/demo/step-ring.svelte';
 	import SessionOverlay from '$lib/components/demo/session-overlay.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { gsap } from '$lib/animate/index.js';
@@ -65,8 +63,7 @@
 		<GreetingCard name="Walker" streak={demo.streakDays} />
 	</div>
 
-	<div data-entry class="flex flex-col items-center gap-6">
-		<StepRing />
+	<div data-entry class="flex flex-col items-center gap-4 py-6">
 		<div class="flex flex-col items-center gap-1">
 			<span
 				class="font-display font-bold leading-none tracking-tight text-foreground"
@@ -76,12 +73,22 @@
 			</span>
 			<span class="text-xs text-muted-foreground">minutes earned</span>
 		</div>
-		<div class="flex items-center gap-4 text-xs text-muted-foreground">
-			<span class="flex items-center gap-1">
-				<FlameIcon class="size-3" />
-				Level {demo.level}
-			</span>
-			<span>{demo.xp} XP</span>
+		<div class="flex flex-wrap items-center justify-center gap-2">
+			<div class="flex items-center gap-1.5 rounded-full border bg-muted px-3 py-1 text-xs tabular-nums">
+				<FootprintsIcon class="size-3 text-muted-foreground" />
+				<span class="font-medium">{demo.steps.toLocaleString()}</span>
+				<span class="text-muted-foreground">today</span>
+			</div>
+			<div class="flex items-center gap-1.5 rounded-full border bg-muted px-3 py-1 text-xs tabular-nums">
+				<TrophyIcon class="size-3 text-muted-foreground" />
+				<span class="font-medium">{demo.totalSteps.toLocaleString()}</span>
+				<span class="text-muted-foreground">total</span>
+			</div>
+			<div class="flex items-center gap-1.5 rounded-full border bg-muted px-3 py-1 text-xs">
+				<FlameIcon class="size-3 text-muted-foreground" />
+				<span class="font-medium">{demo.level}</span>
+				<span class="text-muted-foreground">level</span>
+			</div>
 		</div>
 	</div>
 
