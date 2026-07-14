@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import BottomNavigation from '$lib/components/patterns/bottom-navigation.svelte';
-	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { demo } from '$lib/stores/demo.svelte.js';
 	import FootprintsIcon from '@lucide/svelte/icons/footprints';
 	import TimerIcon from '@lucide/svelte/icons/timer';
@@ -36,5 +35,4 @@
 	{#if !isOnboarding}
 		<BottomNavigation items={navItems} {activeRoute} onSelect={(r) => goto(r)} />
 	{/if}
-	<Toaster />
 </div>

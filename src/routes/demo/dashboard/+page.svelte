@@ -15,7 +15,6 @@
 	import { gsap } from '$lib/animate/index.js';
 	import { demo } from '$lib/stores/demo.svelte.js';
 	import FootprintsIcon from '@lucide/svelte/icons/footprints';
-	import TimerIcon from '@lucide/svelte/icons/timer';
 	import CameraIcon from '@lucide/svelte/icons/camera';
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import FlameIcon from '@lucide/svelte/icons/flame';
@@ -66,17 +65,23 @@
 		<GreetingCard name="Walker" streak={demo.streakDays} />
 	</div>
 
-	<div data-entry class="flex flex-col items-center">
+	<div data-entry class="flex flex-col items-center gap-6">
 		<StepRing />
-		<div class="mt-2 flex items-center justify-center gap-4 text-sm text-muted-foreground">
-			<span class="flex items-center gap-1.5">
-				<TimerIcon class="size-3.5" />
-				{demo.minutes} minute{demo.minutes !== 1 ? 's' : ''} earned
+		<div class="flex flex-col items-center gap-1">
+			<span
+				class="font-display font-bold leading-none tracking-tight text-foreground"
+				style="font-size: 35vh;"
+			>
+				{demo.minutes}
 			</span>
-			<span class="flex items-center gap-1.5">
-				<FlameIcon class="size-3.5" />
+			<span class="text-xs text-muted-foreground">minutes earned</span>
+		</div>
+		<div class="flex items-center gap-4 text-xs text-muted-foreground">
+			<span class="flex items-center gap-1">
+				<FlameIcon class="size-3" />
 				Level {demo.level}
 			</span>
+			<span>{demo.xp} XP</span>
 		</div>
 	</div>
 
