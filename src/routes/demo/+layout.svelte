@@ -20,18 +20,20 @@
 	let activeRoute = $derived($page.url.pathname);
 	let isOnboarding = $derived($page.url.pathname.includes('/onboarding'));
 
-	let gridEl: HTMLDivElement | null = $state(null);
+	let gridEl: SVGSVGElement | null = $state(null);
 
 	onMount(() => {
 		if (!gridEl) return;
 		const ctx = gsap.context(() => {
-			gsap.to(gridEl, {
-				backgroundPosition: '64px 64px',
-				duration: 20,
-				ease: 'sine.inOut',
-				repeat: -1,
-				yoyo: true,
-			});
+			const pattern = gridEl!.querySelector('pattern');
+			if (pattern) {
+				gsap.to(pattern, {
+					attr: { patternTransform: 'translate(48, 48)' },
+					duration: 40,
+					ease: 'none',
+					repeat: -1,
+				});
+			}
 		}, gridEl);
 		return () => ctx.revert();
 	});
@@ -47,11 +49,22 @@
 </script>
 
 <div class="flex h-dvh flex-col bg-background">
-	<div
+	<svg
 		bind:this={gridEl}
-		class="pointer-events-none fixed inset-0 z-0 opacity-[0.12]"
-		style="background-image: linear-gradient(var(--color-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px); background-size: 48px 48px;"
-	></div>
+		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.04]"
+		preserveAspectRatio="none"
+	>
+		<defs>
+			<filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
+				<feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+				<feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
+			</filter>
+			<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+				<path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5" />
+			</pattern>
+		</defs>
+		<rect width="100%" height="100%" fill="url(#grid)" filter="url(#warp)" />
+	</svg>
 	<main class="relative z-10 flex-1 overflow-y-auto" class:px-4={!isOnboarding} class:pt-4={!isOnboarding} class:pb-20={!isOnboarding}>
 		{@render children()}
 	</main>
