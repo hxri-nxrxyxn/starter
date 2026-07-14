@@ -7,7 +7,7 @@
 	import { gsap, buttonPress } from '$lib/animate/index.js';
 
 	import HeroSection from '$lib/components/sections/home/hero-section.svelte';
-	import { BigTimer, FeatureGrid } from '$lib/components/sections/index.js';
+	import { BigTimer, FeatureGrid, AnimatedStatCounter, TestimonialCarousel } from '$lib/components/sections/index.js';
 	import { LoginForm, SignupForm, OTPForm } from '$lib/components/sections/index.js';
 	import StoryCircle from '$lib/components/sections/feed/story-circle.svelte';
 	import VideoCard from '$lib/components/sections/feed/video-card.svelte';
@@ -16,26 +16,29 @@
 	import UserProfileCard from '$lib/components/sections/social/user-profile-card.svelte';
 	import LiveIndicator from '$lib/components/sections/social/live-indicator.svelte';
 	import ShareSheet from '$lib/components/sections/social/share-sheet.svelte';
-	import LeaderboardPanel from '$lib/components/sections/gamification/leaderboard-panel.svelte';
-	import BottomNavigation from '$lib/components/patterns/bottom-navigation.svelte';
+	import SearchPage from '$lib/components/sections/discovery/search-page.svelte';
+	import CategoryGrid from '$lib/components/sections/discovery/category-grid.svelte';
+	import TrendingCarousel from '$lib/components/sections/discovery/trending-carousel.svelte';
 	import CreatorDashboard from '$lib/components/sections/dashboard/creator-dashboard.svelte';
 	import ContentAnalytics from '$lib/components/sections/dashboard/content-analytics.svelte';
+	import StreakCalendar from '$lib/components/sections/dashboard/streak-calendar.svelte';
 	import ChallengeSection from '$lib/components/sections/gamification/challenge-section.svelte';
+	import LeaderboardPanel from '$lib/components/sections/gamification/leaderboard-panel.svelte';
 	import { RewardPopup } from '$lib/components/sections/index.js';
 	import ProfileEditForm from '$lib/components/sections/settings/profile-edit-form.svelte';
 	import { PremiumUpsellPage, AppSettingsPage } from '$lib/components/sections/index.js';
-	import CategoryGrid from '$lib/components/sections/discovery/category-grid.svelte';
-	import TrendingCarousel from '$lib/components/sections/discovery/trending-carousel.svelte';
-	import AnimatedStatCounter from '$lib/components/sections/home/animated-stat-counter.svelte';
+	import BottomNavigation from '$lib/components/patterns/bottom-navigation.svelte';
+	import DrawerMenu from '$lib/components/sections/shell/drawer-menu.svelte';
 
 	import {
-		Activity, Star, Users, MessageCircle, Layers, Settings,
+		Activity, Star, Users, MessageCircle, Search, Layout, Layers, Trophy, Settings, Grid3x3,
 		Sun, Moon, Monitor, Footprints, Timer, User
 	} from '@lucide/svelte';
 
 	let section = $state('home');
 	let showShare = $state(false);
 	let showReward = $state(false);
+	let showDrawer = $state(false);
 	let mainEl: HTMLElement | undefined = $state();
 	let navDemo = $state('dashboard');
 
@@ -44,8 +47,11 @@
 		{ id: 'auth', label: 'Auth', icon: Users },
 		{ id: 'feed', label: 'Feed', icon: Activity },
 		{ id: 'social', label: 'Social', icon: MessageCircle },
-		{ id: 'dashboard', label: 'Dashboard', icon: Layers },
+		{ id: 'discovery', label: 'Discovery', icon: Search },
+		{ id: 'dashboard', label: 'Dashboard', icon: Layout },
+		{ id: 'gamification', label: 'Gamification', icon: Trophy },
 		{ id: 'settings', label: 'Settings', icon: Settings },
+		{ id: 'shell', label: 'Shell', icon: Grid3x3 },
 	];
 
 	const storyItems = [
@@ -134,10 +140,8 @@
 				<AnimatedStatCounter value={2840} label="Components Built" />
 				<h2 class="text-lg font-semibold tracking-tight">FeatureGrid</h2>
 				<FeatureGrid />
-				<h2 class="text-lg font-semibold tracking-tight">CategoryGrid</h2>
-				<CategoryGrid />
-				<h2 class="text-lg font-semibold tracking-tight">TrendingCarousel</h2>
-				<TrendingCarousel items={trendingItems} />
+				<h2 class="text-lg font-semibold tracking-tight">TestimonialCarousel</h2>
+				<TestimonialCarousel />
 			</div>
 
 		{:else if section === 'auth'}
@@ -170,16 +174,18 @@
 				<div class="flex items-center justify-center py-4">
 					<LiveIndicator viewerCount={142} />
 				</div>
-				<h2 class="text-lg font-semibold tracking-tight">LeaderboardPanel</h2>
-				<LeaderboardPanel />
 				<h2 class="text-lg font-semibold tracking-tight">ShareSheet</h2>
 				<Button onclick={() => showShare = true} variant="outline" class="w-full">Open ShareSheet</Button>
-				<h2 class="text-lg font-semibold tracking-tight">BottomNavigation</h2>
-				<BottomNavigation items={[
-					{ icon: Footprints, label: 'Dashboard', route: 'dashboard' },
-					{ icon: Timer, label: 'Sessions', route: 'sessions' },
-					{ icon: User, label: 'Profile', route: 'profile' },
-				]} activeRoute={navDemo} onSelect={(r) => { navDemo = r; toast(`Nav: ${r}`); }} />
+			</div>
+
+		{:else if section === 'discovery'}
+			<div class="flex flex-col gap-4">
+				<h2 class="text-lg font-semibold tracking-tight">SearchPage</h2>
+				<SearchPage onSelect={(item) => toast(`Selected: ${item.title}`)} />
+				<h2 class="text-lg font-semibold tracking-tight">CategoryGrid</h2>
+				<CategoryGrid onSelect={(id) => toast(`Category: ${id}`)} />
+				<h2 class="text-lg font-semibold tracking-tight">TrendingCarousel</h2>
+				<TrendingCarousel items={trendingItems} onSelect={(id) => toast(`Trending: ${id}`)} />
 			</div>
 
 		{:else if section === 'dashboard'}
@@ -188,8 +194,16 @@
 				<CreatorDashboard />
 				<h2 class="text-lg font-semibold tracking-tight">ContentAnalytics</h2>
 				<ContentAnalytics />
+				<h2 class="text-lg font-semibold tracking-tight">StreakCalendar</h2>
+				<StreakCalendar />
+			</div>
+
+		{:else if section === 'gamification'}
+			<div class="flex flex-col gap-4">
 				<h2 class="text-lg font-semibold tracking-tight">ChallengeSection</h2>
 				<ChallengeSection />
+				<h2 class="text-lg font-semibold tracking-tight">LeaderboardPanel</h2>
+				<LeaderboardPanel />
 			</div>
 
 		{:else if section === 'settings'}
@@ -201,6 +215,18 @@
 				<h2 class="text-lg font-semibold tracking-tight">AppSettingsPage</h2>
 				<AppSettingsPage />
 			</div>
+
+		{:else if section === 'shell'}
+			<div class="flex flex-col gap-4">
+				<h2 class="text-lg font-semibold tracking-tight">BottomNavigation</h2>
+				<BottomNavigation items={[
+					{ icon: Footprints, label: 'Dashboard', route: 'dashboard' },
+					{ icon: Timer, label: 'Sessions', route: 'sessions' },
+					{ icon: User, label: 'Profile', route: 'profile' },
+				]} activeRoute={navDemo} onSelect={(r) => { navDemo = r; toast(`Nav: ${r}`); }} />
+				<h2 class="text-lg font-semibold tracking-tight">DrawerMenu</h2>
+				<Button onclick={() => showDrawer = true} variant="outline" class="w-full">Open DrawerMenu</Button>
+			</div>
 		{/if}
 
 		<div class="pb-16"></div>
@@ -209,3 +235,4 @@
 
 <ShareSheet open={showShare} onClose={() => { showShare = false; }} />
 <RewardPopup open={showReward} rewardAmount={500} rewardLabel="XP" onClaim={() => { showReward = false; }} title="Component Master!" description="You built all 28 composites" />
+<DrawerMenu open={showDrawer} onClose={() => { showDrawer = false; }} items={tabs.map(t => ({ id: t.id, icon: t.icon, label: t.label }))} activeId={section} onNavigate={(id) => { section = id; showDrawer = false; }} />
