@@ -70,6 +70,21 @@
 	let mainEl: HTMLElement | undefined = $state();
 	let heroTitleEl: HTMLElement | undefined = $state();
 
+	let onboardingStep = $state(1);
+	let onboardingGoal = $state('');
+	let onboardingLevel = $state('');
+	let totalOnboardingSteps = $state(5);
+
+	function nextStep() {
+		if (onboardingStep < totalOnboardingSteps) {
+			onboardingStep++;
+		}
+	}
+
+	function skipToEnd() {
+		onboardingStep = totalOnboardingSteps;
+	}
+
 	async function handleSearch(q: string) {
 		searchQuery = q;
 		if (!q) { searchResults = []; return; }
@@ -249,21 +264,82 @@
 				</div>
 
 			{:else if section === 'onboarding'}
-				<div class="flex flex-col gap-4">
-					<h2 data-entry-section class="text-sm font-semibold text-muted-foreground">ONBOARDING</h2>
-
-					<OnboardingSlide icon={Sparkles} title="Welcome to App Starter" description="Build beautiful apps fast with reusable patterns." />
-					<OnboardingSlide icon={Target} title="Set Your Goals" description="Choose what matters to you." />
-					<OnboardingSlide icon={Bell} title="Stay Notified" description="Get reminders on your journey." />
-
-					<PermissionCard icon={Bell} title="Notifications" description="Allow notifications" onGrant={() => {}} onDeny={() => {}} />
-					<PermissionCard icon={Shield} title="Health Data" description="Access activity data" granted onGrant={() => {}} onDeny={() => {}} />
-
-					<SectionHeader title="Search" />
-					<SearchHeader onSearch={handleSearch} placeholder="Search..." />
-					<SearchResults query={searchQuery} results={searchResults} loading={searchLoading} onSelect={(item) => { /* TODO: navigate to item */ console.log('Selected:', item.title); }} total={searchResults.length} />
-
-					<SkeletonList count={3} />
+				<div class="flex flex-col">
+					{#if onboardingStep === 1}
+						<OnboardingSlide
+							icon={Sparkles}
+							title="Welcome to App Starter"
+							description="Build beautiful apps fast with reusable patterns, GSAP animations, and shadcn-svelte components. Let's get you set up!"
+							actionLabel="Get Started"
+							onAction={nextStep}
+							actionSecondary="Skip"
+							onSecondary={skipToEnd}
+							step={1}
+							totalSteps={totalOnboardingSteps}
+						/>
+					{:else if onboardingStep === 2}
+						<OnboardingSlide
+							icon={Target}
+							title="What brings you here?"
+							description="Choose what matters most to you right now."
+							actionLabel="Continue"
+							onAction={() => { if (onboardingGoal) nextStep(); }}
+							actionSecondary="Skip"
+							onSecondary={nextStep}
+							choices={[
+								{ id: 'fitness', label: 'Get Fit', description: 'Track workouts and build habits', icon: Flame },
+								{ id: 'productivity', label: 'Stay Productive', description: 'Manage tasks and goals', icon: Zap },
+								{ id: 'learning', label: 'Learn Something New', description: 'Build skills every day', icon: BookOpen },
+							]}
+							selected={onboardingGoal}
+							onSelect={(id) => { onboardingGoal = id; }}
+							step={2}
+							totalSteps={totalOnboardingSteps}
+						/>
+					{:else if onboardingStep === 3}
+						<OnboardingSlide
+							icon={TrendingUp}
+							title="Your experience level?"
+							description="We'll tailor the experience to match your pace."
+							actionLabel="Continue"
+							onAction={() => { if (onboardingLevel) nextStep(); }}
+							actionSecondary="Skip"
+							onSecondary={nextStep}
+							choices={[
+								{ id: 'beginner', label: 'Beginner', description: "I'm just getting started", icon: Star },
+								{ id: 'intermediate', label: 'Intermediate', description: 'I know the basics', icon: Activity },
+								{ id: 'advanced', label: 'Advanced', description: 'I am already experienced', icon: Crown },
+							]}
+							selected={onboardingLevel}
+							onSelect={(id) => { onboardingLevel = id; }}
+							step={3}
+							totalSteps={totalOnboardingSteps}
+						/>
+					{:else if onboardingStep === 4}
+						<OnboardingSlide
+							icon={Bell}
+							title="Stay in the loop"
+							description="Get notified about your progress, reminders, and personalized tips."
+							actionLabel="Allow Notifications"
+							onAction={nextStep}
+							actionSecondary="Not now"
+							onSecondary={nextStep}
+							step={4}
+							totalSteps={totalOnboardingSteps}
+						/>
+					{:else if onboardingStep === 5}
+						<OnboardingSlide
+							icon={CheckCircle}
+							title="You're all set!"
+							description={onboardingGoal
+								? "We'll help you stay on track with your goals. Let's start!"
+								: 'Jump right in and explore what App Starter has to offer.'}
+							actionLabel="Start Exploring"
+							onAction={() => { section = 'dashboard'; }}
+							step={5}
+							totalSteps={totalOnboardingSteps}
+						/>
+					{/if}
 				</div>
 
 			{:else if section === 'social'}
