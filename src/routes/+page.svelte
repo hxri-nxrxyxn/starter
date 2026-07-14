@@ -5,6 +5,7 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { toast } from 'svelte-sonner';
 
 	import SplashScreen from '$lib/components/patterns/splash-screen.svelte';
 	import OfflineBanner from '$lib/components/patterns/offline-banner.svelte';
@@ -75,6 +76,49 @@
 	let onboardingLevel = $state('');
 	let totalOnboardingSteps = $state(5);
 
+	let selectedFilters = $state.raw<Record<string, string[]>>({});
+	let insightItems = $state.raw([
+		{ id: 'insight-1', title: 'Best time to exercise', description: 'Your activity peaks around 7 AM.', variant: 'info' as const, icon: Brain },
+		{ id: 'insight-2', title: 'Almost there!', description: '3 days from beating your longest streak.', variant: 'success' as const, icon: Flame },
+	]);
+	let kanbanCols = $state([
+		{ id: 'todo', title: 'To Do', items: [
+			{ id: '1', title: 'Design system', badge: 'Design' },
+			{ id: '2', title: 'API integration', badge: 'Dev' },
+		]},
+		{ id: 'progress', title: 'In Progress', items: [
+			{ id: '3', title: 'Auth flow', badge: 'Feature' },
+		]},
+		{ id: 'done', title: 'Done', items: [
+			{ id: '4', title: 'Splash screen', badge: 'UI' },
+			{ id: '5', title: 'Dashboard layout', badge: 'UI' },
+		]},
+	]);
+	let infItems = $state([1, 2, 3]);
+	let infHasMore = $state(true);
+	let infiniteLoading = $state(false);
+
+	function moveKanbanItem(colId: string, itemId: string) {
+		const sourceIdx = kanbanCols.findIndex(c => c.id === colId);
+		if (sourceIdx === -1) return;
+		const item = kanbanCols[sourceIdx].items.find(i => i.id === itemId);
+		if (!item) return;
+		const targetIdx = (sourceIdx + 1) % kanbanCols.length;
+		kanbanCols[sourceIdx].items = kanbanCols[sourceIdx].items.filter(i => i.id !== itemId);
+		kanbanCols[targetIdx].items = [...kanbanCols[targetIdx].items, item];
+		toast.success(`Moved "${item.title}" to ${kanbanCols[targetIdx].title}`);
+	}
+
+	async function loadMoreItems() {
+		if (infiniteLoading) return;
+		infiniteLoading = true;
+		await new Promise(r => setTimeout(r, 800));
+		const next = infItems.length + 1;
+		infItems = [...infItems, next];
+		if (infItems.length >= 6) infHasMore = false;
+		infiniteLoading = false;
+	}
+
 	function nextStep() {
 		if (onboardingStep < totalOnboardingSteps) {
 			onboardingStep++;
@@ -131,20 +175,6 @@
 		{ id: 'feedback', label: 'Feedback', icon: MessageCircle },
 		{ id: 'data', label: 'Data', icon: Layers },
 		{ id: 'settings', label: 'Settings', icon: Settings },
-	];
-
-	const kanbanColumns = [
-		{ id: 'todo', title: 'To Do', items: [
-			{ id: '1', title: 'Design system', badge: 'Design' },
-			{ id: '2', title: 'API integration', badge: 'Dev' },
-		]},
-		{ id: 'progress', title: 'In Progress', items: [
-			{ id: '3', title: 'Auth flow', badge: 'Feature' },
-		]},
-		{ id: 'done', title: 'Done', items: [
-			{ id: '4', title: 'Splash screen', badge: 'UI' },
-			{ id: '5', title: 'Dashboard layout', badge: 'UI' },
-		]},
 	];
 
 	const timelineItems = [
@@ -221,12 +251,14 @@
 					]} columns={2} />
 
 					<QuickActionGrid actions={[
-						{ icon: Search, label: 'Search' }, { icon: Plus, label: 'Add' },
-						{ icon: Camera, label: 'Scan' }, { icon: Timer, label: 'Timer' },
-						{ icon: Share2, label: 'Share' },
+						{ icon: Search, label: 'Search', onClick: () => toast('Search opened') },
+						{ icon: Plus, label: 'Add', onClick: () => toast('Add item') },
+						{ icon: Camera, label: 'Scan', onClick: () => toast('Camera opened') },
+						{ icon: Timer, label: 'Timer', onClick: () => toast('Timer started') },
+						{ icon: Share2, label: 'Share', onClick: () => toast('Share menu opened') },
 					]} columns={5} />
 
-					<SectionHeader title="Recent Activity" onSeeAll={() => {}} />
+					<SectionHeader title="Recent Activity" onSeeAll={() => toast('See all activity')} />
 
 					<ActivityCard icon={TrendingUp} title="Completed Walk" description="2km walk in the park" timestamp={new Date(Date.now() - 3600000)} badge="Walk" />
 					<ActivityCard icon={Brain} title="Meditation Session" description="10 min mindfulness" timestamp={new Date(Date.now() - 7200000)} badge="Mind" />
@@ -238,13 +270,20 @@
 						{ title: 'Track Progress', description: 'What gets measured gets improved', icon: Target },
 					]} />
 
-					<InsightCard title="Best time to exercise" description="Your activity peaks around 7 AM." variant="info" icon={Brain} onDismiss={() => {}} />
-					<InsightCard title="Almost there!" description="3 days from beating your longest streak." variant="success" icon={Flame} />
+					{#each insightItems as item (item.id)}
+						<InsightCard
+							title={item.title}
+							description={item.description}
+							variant={item.variant}
+							icon={item.icon}
+							onDismiss={() => { insightItems = insightItems.filter(i => i.id !== item.id); }}
+						/>
+					{/each}
 
 					<StreakWidget count={17} goal={30} label="Day Streak" />
 
-					<HeroCard headline="Upgrade to Pro" description="Unlock all features." ctaLabel="Learn More" icon={Crown} variant="compact" />
-					<PremiumBanner title="Go Premium" description="Unlock unlimited access" actionLabel="Upgrade" icon={Sparkles} />
+					<HeroCard headline="Upgrade to Pro" description="Unlock all features." ctaLabel="Learn More" icon={Crown} variant="compact" onCta={() => toast('Learn More about Pro')} />
+					<PremiumBanner title="Go Premium" description="Unlock unlimited access" actionLabel="Upgrade" icon={Sparkles} onAction={() => toast('Upgrade flow started')} />
 
 					<SectionHeader title="Achievements" />
 					<div class="grid grid-cols-2 gap-4">
@@ -344,7 +383,7 @@
 				<div class="flex flex-col gap-4">
 					<h2 data-entry-section class="text-sm font-semibold text-muted-foreground">SOCIAL</h2>
 
-					<ProfileHeader name="Hari" username="@hari" bio="Building the future" followers={128} following={64} isPremium onEdit={() => {}} />
+					<ProfileHeader name="Hari" username="@hari" bio="Building the future" followers={128} following={64} isPremium onEdit={() => toast('Edit profile')} />
 
 					<Leaderboard entries={leaderboardEntries} />
 
@@ -358,8 +397,8 @@
 							{ label: 'Calories', value: '2,840' },
 						]}
 						actions={[
-							{ icon: Share2, label: 'Share', onClick: () => {} },
-							{ icon: Heart, label: 'Like', onClick: () => {} },
+							{ icon: Share2, label: 'Share', onClick: () => toast('Shared achievement') },
+							{ icon: Heart, label: 'Like', onClick: () => toast('Achievement liked') },
 						]}
 					>
 						<p class="text-sm text-muted-foreground">Congratulations on completing your first marathon!</p>
@@ -397,15 +436,15 @@
 							{ id: 'type', label: 'Type', options: [{ value: 'walk', label: 'Walk' }, { value: 'run', label: 'Run' }, { value: 'cycle', label: 'Cycle' }] },
 							{ id: 'duration', label: 'Duration', options: [{ value: 'short', label: '< 15 min' }, { value: 'medium', label: '15-30 min' }, { value: 'long', label: '> 30 min' }] },
 						]}
-						selectedFilters={{}}
-						onFilterChange={() => {}}
-						onClear={() => { showFilter = false; }}
-						onApply={() => { showFilter = false; }}
+						selectedFilters={selectedFilters}
+						onFilterChange={(filterId, values) => { selectedFilters = { ...selectedFilters, [filterId]: values }; }}
+						onClear={() => { selectedFilters = {}; showFilter = false; }}
+						onApply={() => { toast('Filters applied'); showFilter = false; }}
 					/>
 
-					<EmptyState icon={Inbox} title="No messages" description="Start a conversation to see your messages here." actionLabel="New Message" onAction={() => {}} />
+					<EmptyState icon={Inbox} title="No messages" description="Start a conversation to see your messages here." actionLabel="New Message" onAction={() => toast('New conversation started')} />
 
-					<ErrorState title="Something went wrong" description="We couldn't load your data. Try again." retryLabel="Retry" onRetry={() => {}} />
+					<ErrorState title="Something went wrong" description="We couldn't load your data. Try again." retryLabel="Retry" onRetry={() => toast('Retrying...')} />
 				</div>
 
 			{:else if section === 'data'}
@@ -426,7 +465,7 @@
 						{ date: 15, title: 'Birthday' },
 					]} />
 
-					<KanbanBoard columns={kanbanColumns} />
+					<KanbanBoard columns={kanbanCols} onItemClick={moveKanbanItem} />
 
 					<PullToRefreshContainer onRefresh={async () => { await new Promise(r => setTimeout(r, 1000)); }}>
 						<div class="flex flex-col gap-2 rounded-lg border p-4">
@@ -435,17 +474,17 @@
 					</PullToRefreshContainer>
 
 					<p class="text-muted-foreground text-xs">Infinite list (items rendered via snippet):</p>
-					<InfiniteList items={[1, 2, 3]} loadMore={async () => {}} hasMore={false}>
+					<InfiniteList items={infItems} loadMore={loadMoreItems} hasMore={infHasMore} loading={infiniteLoading}>
 						{#snippet renderItem(item: number)}
 							<div class="rounded-lg border p-3 text-sm">Item {item}</div>
 						{/snippet}
 					</InfiniteList>
 
 					<SettingsSection title="Account" items={[
-						{ icon: User, label: 'Profile', description: 'Edit your profile', onClick: () => {} },
-						{ icon: Bell, label: 'Notifications', description: 'Manage alerts', onClick: () => {} },
-						{ icon: Shield, label: 'Privacy', description: 'Control your data', onClick: () => {} },
-						{ icon: LogOut, label: 'Sign Out', variant: 'destructive', onClick: () => {} },
+						{ icon: User, label: 'Profile', description: 'Edit your profile', onClick: () => toast('Profile settings opened') },
+						{ icon: Bell, label: 'Notifications', description: 'Manage alerts', onClick: () => toast('Notification settings opened') },
+						{ icon: Shield, label: 'Privacy', description: 'Control your data', onClick: () => toast('Privacy settings opened') },
+						{ icon: LogOut, label: 'Sign Out', variant: 'destructive', onClick: () => { toast('Signed out'); } },
 					]} />
 				</div>
 
@@ -474,7 +513,7 @@
 						{ icon: LogOut, label: 'Delete Account', variant: 'destructive' },
 					]} />
 
-					<FloatingActionButton label="New" position="br" />
+					<FloatingActionButton label="New" position="br" onClick={() => toast('FAB clicked!')} />
 				</div>
 			{/if}
 

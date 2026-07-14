@@ -3,6 +3,7 @@
 	import '$lib/app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { gsap } from '$lib/animate/index.js';
+	import Toaster from '$lib/components/ui/sonner/sonner.svelte';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
@@ -45,3 +46,4 @@
 
 <div bind:this={bg} class="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--color-primary/0.03)_0%,transparent_70%)] bg-[length:200%_200%] pointer-events-none"></div>
 {@render children()}
+<Toaster position="top-center" richColors />

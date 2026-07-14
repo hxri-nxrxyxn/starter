@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Spinner from "$lib/components/ui/spinner/spinner.svelte";
 	import { cn } from "$lib/utils.js";
+	import { onMount } from "svelte";
 
 	interface Props {
 		logo?: any;
@@ -19,6 +20,13 @@
 		onFinish = undefined,
 		className,
 	}: Props = $props();
+
+	onMount(() => {
+		if (!loading && onFinish) {
+			const timer = setTimeout(onFinish, 2500);
+			return () => clearTimeout(timer);
+		}
+	});
 </script>
 
 <div

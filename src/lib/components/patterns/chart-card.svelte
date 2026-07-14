@@ -37,16 +37,23 @@
 
 	onMount(() => {
 		if (!chartEl) return;
+		gsap.from(chartEl!.querySelectorAll("[data-chart-bar]"), {
+			scaleY: 0,
+			transformOrigin: "bottom center",
+			duration: 0.5,
+			stagger: 0.06,
+			ease: "premium-bounce",
+		});
+	});
+
+	$effect(() => {
+		const p = period;
+		if (!chartEl || !p) return;
 		const bars = chartEl.querySelectorAll("[data-chart-bar]");
-		if (bars.length) {
-			gsap.from(bars, {
-				scaleY: 0,
-				transformOrigin: "bottom center",
-				duration: 0.5,
-				stagger: 0.06,
-				ease: "premium-bounce",
-			});
-		}
+		gsap.fromTo(bars,
+			{ scaleY: 0 },
+			{ scaleY: 1, transformOrigin: "bottom center", duration: 0.5, stagger: 0.06, ease: "premium-bounce", clearProps: "scaleY" }
+		);
 	});
 </script>
 
