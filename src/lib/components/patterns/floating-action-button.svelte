@@ -36,7 +36,10 @@
 	onMount(() => {
 		if (!fab) return;
 		const ctx = gsap.context(() => {
-			gsap.from(fab!, { opacity: 0, scale: 0.8, duration: 0.35, ease: "power2.out", delay: 0.3 });
+			gsap.fromTo(fab!,
+				{ opacity: 0, scale: 0, rotation: -45 },
+				{ opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "premium-spring", delay: 0.3 }
+			);
 		}, fab);
 		return () => ctx.revert();
 	});
