@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { toast } from 'svelte-sonner';
 	import HeroSection from '$lib/components/sections/home/hero-section.svelte';
-	import { BigTimer, AnimatedStatCounter, FeatureGrid, TestimonialCarousel } from '$lib/components/sections/index.js';
+	import { BigTimer, AnimatedStatCounter, FeatureGrid } from '$lib/components/sections/index.js';
 
 	let { class: className }: { class?: string } = $props();
 </script>
@@ -21,6 +21,4 @@
 	<AnimatedStatCounter value={2840} label="Components Built" />
 	<h2 class="text-lg font-semibold tracking-tight">FeatureGrid</h2>
 	<FeatureGrid />
-	<h2 class="text-lg font-semibold tracking-tight">TestimonialCarousel</h2>
-	<TestimonialCarousel />
 </div>
