@@ -42,24 +42,19 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="mx-auto flex min-h-dvh max-w-2xl flex-col bg-background">
-	<svg
-		bind:this={gridEl}
-		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.09]"
-		style="transform: perspective(500px) rotateX(9deg) scale(0.95);"
-		preserveAspectRatio="none"
-	>
-		<defs>
-			<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-				<path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5" />
-			</pattern>
-		</defs>
-		<rect width="100%" height="100%" fill="url(#grid)" />
-	</svg>
+<svg
+	bind:this={gridEl}
+	class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.09]"
+	style="transform: perspective(500px) rotateX(9deg) scale(0.95);"
+	preserveAspectRatio="none"
+>
+	<defs>
+		<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+			<path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5" />
+		</pattern>
+	</defs>
+	<rect width="100%" height="100%" fill="url(#grid)" />
+</svg>
 
-	<main class="relative z-10 flex-1 overflow-y-auto p-4">
-		{@render children()}
-	</main>
-</div>
-
+{@render children()}
 <Toaster position="top-center" richColors />

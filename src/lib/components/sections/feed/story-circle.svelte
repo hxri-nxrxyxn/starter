@@ -26,7 +26,7 @@
 	}: Props = $props();
 
 	let containerEl: HTMLDivElement | undefined = $state();
-	let itemEls: HTMLDivElement[] = $state([]);
+	let itemEls: HTMLDivElement[] = [];
 
 	function itemRef(node: HTMLDivElement) {
 		itemEls.push(node);

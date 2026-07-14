@@ -37,7 +37,7 @@
 	let items = $state.raw(cloneComments());
 	let inputValue = $state("");
 	let sectionEl: HTMLDivElement | undefined = $state();
-	let commentEls: HTMLDivElement[] = $state([]);
+	let commentEls: HTMLDivElement[] = [];
 
 	function commentRef(node: HTMLDivElement) {
 		commentEls.push(node);
