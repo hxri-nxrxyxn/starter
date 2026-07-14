@@ -25,15 +25,14 @@
 	onMount(() => {
 		if (!gridEl) return;
 		const ctx = gsap.context(() => {
-			const pattern = gridEl!.querySelector('pattern');
-			if (pattern) {
-				gsap.to(pattern, {
-					attr: { patternTransform: 'translate(48, 48)' },
-					duration: 40,
-					ease: 'none',
-					repeat: -1,
-				});
-			}
+			gsap.to(gridEl, {
+				x: 24,
+				y: 24,
+				duration: 25,
+				ease: 'none',
+				repeat: -1,
+				yoyo: true,
+			});
 		}, gridEl);
 		return () => ctx.revert();
 	});
@@ -51,13 +50,13 @@
 <div class="flex h-dvh flex-col bg-background">
 	<svg
 		bind:this={gridEl}
-		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.04]"
+		class="pointer-events-none fixed inset-0 z-0 h-full w-full text-foreground opacity-[0.07]"
 		preserveAspectRatio="none"
 	>
 		<defs>
-			<filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
-				<feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
-				<feDisplacementMap in="SourceGraphic" in2="noise" scale="18" xChannelSelector="R" yChannelSelector="G" />
+			<filter id="warp" x="-10%" y="-10%" width="120%" height="120%">
+				<feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
+				<feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" />
 			</filter>
 			<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
 				<path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5" />
