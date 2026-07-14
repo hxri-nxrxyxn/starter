@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { UserProfileCard, LeaderboardPanel, AppSettingsPage } from '$lib/components/sections/index.js';
+	import { UserProfileCard, AppSettingsPage } from '$lib/components/sections/index.js';
 	import StatGrid from '$lib/components/patterns/stat-grid.svelte';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { gsap } from '$lib/animate/index.js';
@@ -50,10 +50,6 @@
 				{ value: demo.level.toString(), label: 'Level', icon: CrownIcon },
 			]}
 		/>
-	</div>
-
-	<div data-entry>
-		<LeaderboardPanel />
 	</div>
 
 	<div data-entry>
