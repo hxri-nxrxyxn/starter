@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import GreetingCard from '$lib/components/patterns/greeting-card.svelte';
@@ -9,7 +10,6 @@
 	import AchievementCard from '$lib/components/patterns/achievement-card.svelte';
 	import SectionHeader from '$lib/components/patterns/section-header.svelte';
 	import StepRing from '$lib/components/demo/step-ring.svelte';
-	import MockWalk from '$lib/components/demo/mock-walk.svelte';
 	import SessionOverlay from '$lib/components/demo/session-overlay.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { gsap } from '$lib/animate/index.js';
@@ -52,18 +52,9 @@
 	});
 
 	function handleTakeWalk() {
-	showMockWalk = true;
-	}
-
-	function handleWalkComplete(steps: number) {
-		showMockWalk = false;
-		if (steps > 0) milestones.push({ date: new Date(), steps });
-	}
-
-	const milestones = $state<Array<{ date: Date; steps: number }>>([]);
-
-	function handleWalkCancel() {
-		showMockWalk = false;
+		const steps = Math.floor(Math.random() * 1001) + 500;
+		demo.addSteps(steps);
+		toast.success(`Walked ${steps} steps!`, { description: demo.minutes > 0 ? `${demo.minutes} minute${demo.minutes !== 1 ? 's' : ''} earned` : undefined });
 	}
 
 	let totalSteps5k = $derived(Math.min(demo.totalSteps, 5000));
@@ -129,10 +120,6 @@
 
 	<div class="h-4"></div>
 </div>
-
-{#if showMockWalk}
-	<MockWalk onWalkComplete={handleWalkComplete} />
-{/if}
 
 {#if demo.activeSession}
 	<SessionOverlay />
