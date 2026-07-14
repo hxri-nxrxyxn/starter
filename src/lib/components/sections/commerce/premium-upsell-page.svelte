@@ -127,7 +127,7 @@
 				)}
 			>
 				{#if plan.popular}
-					<div class="absolute -top-3 left-1/2 -translate-x-1/2">
+					<div class="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
 						<Badge class="bg-primary text-primary-foreground gap-1 px-3 py-1">
 							<StarIcon class="size-3" />
 							Popular
