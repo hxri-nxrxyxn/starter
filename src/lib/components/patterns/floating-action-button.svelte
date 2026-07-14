@@ -37,8 +37,8 @@
 		if (!fab) return;
 		const ctx = gsap.context(() => {
 			gsap.fromTo(fab!,
-				{ opacity: 0, y: 12 },
-				{ opacity: 1, y: 0, duration: 0.25, ease: "premium-smooth", delay: 0.1 }
+				{ opacity: 0, scale: 0.5 },
+				{ opacity: 1, scale: 1, duration: 0.35, ease: "premium-bounce" }
 			);
 		}, fab);
 		return () => ctx.revert();
