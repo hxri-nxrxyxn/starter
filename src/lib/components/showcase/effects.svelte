@@ -57,3 +57,4 @@
 	<div data-anim class="relative h-32 overflow-hidden" style="width: 100vw; margin-left: calc(-50vw + 50%);">
 		<InfiniteRibbon text="CREATE MOMENTUM " speed={15} opacity={0.06} fontSize={100} />
 	</div>
+</div>
